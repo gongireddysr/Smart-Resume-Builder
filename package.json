@@ -11,8 +11,11 @@
   },
   "dependencies": {
     "@tailwindcss/vite": "^4.1.16",
+    "docx": "^9.5.1",
+    "mammoth": "^1.11.0",
     "react": "^19.1.1",
     "react-dom": "^19.1.1",
+    "superdoc": "^0.28.4",
     "tailwindcss": "^4.1.16"
   },
   "devDependencies": {
