@@ -2,6 +2,7 @@ import { useState } from 'react'
 import LeftPanel from './components/LeftPanel'
 import RightPanel from './components/RightPanel'
 
+
 function App() {
   const [textContent, setTextContent] = useState<string>('')
   const [uploadedFile, setUploadedFile] = useState<File | null>(null)
@@ -13,6 +14,7 @@ function App() {
   const handleFileChange = (file: File | null) => {
     setUploadedFile(file)
   }
+
 
   const handleModify = () => {
     // This function will handle the modification logic
@@ -34,7 +36,7 @@ function App() {
     <div className="h-screen bg-gray-50 flex flex-col overflow-hidden">
       {/* Header */}
       <header className="bg-white shadow-sm border-b flex-shrink-0">
-        <div className="px-6 py-3">
+        <div className="px-6 py-3 flex items-center justify-between">
           <h1 className="text-2xl font-bold text-blue-600">
             Smart Resume Modifier
           </h1>
