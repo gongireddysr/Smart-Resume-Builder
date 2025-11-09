@@ -32,6 +32,32 @@ function App() {
     }
   }
 
+  const handleDummyTest = async () => {
+    try {
+      const res = await fetch('/api/modify-resume', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          text: 'This is a test resume text used to verify the serverless function.',
+          role: 'Software Engineer',
+        }),
+      })
+
+      if (!res.ok) {
+        const err = await res.json().catch(() => ({} as any))
+        throw new Error(err?.error || `Request failed: ${res.status}`)
+      }
+
+      const data = await res.json()
+      const preview = (data?.result || '').slice(0, 200)
+      alert(preview ? `Function OK:\n${preview}...` : 'Function OK, but no result returned')
+      console.log('Serverless response:', data)
+    } catch (e: any) {
+      console.error('Serverless error:', e)
+      alert(`Function error: ${e?.message || e}`)
+    }
+  }
+
   return (
     <div className="h-screen bg-gray-50 flex flex-col overflow-hidden">
       {/* Header */}
@@ -40,6 +66,12 @@ function App() {
           <h1 className="text-2xl font-bold text-blue-600">
             Smart Resume Modifier
           </h1>
+          <button
+            onClick={handleDummyTest}
+            className="px-4 py-2 bg-gray-100 hover:bg-gray-200 text-gray-800 rounded-md border border-gray-300 transition"
+          >
+            Dummy
+          </button>
         </div>
       </header>
 
