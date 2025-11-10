@@ -1,18 +1,33 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import mammoth from 'mammoth'
 
 interface RightPanelProps {
-  onFileChange?: (file: File | null) => void
+  onFileChange?: (file: File | null, extractedText?: string) => void
+  isLoading?: boolean
+  uploadedFile?: File | null
+  resumeText?: string
 }
 
-function RightPanel({ onFileChange }: RightPanelProps) {
-  const [uploadedFile, setUploadedFile] = useState<File | null>(null)
-  const [fileContent, setFileContent] = useState<string>('')
-  const [originalContent, setOriginalContent] = useState<string>('')
-  const [isLoading, setIsLoading] = useState<boolean>(false)
+function RightPanel({ onFileChange, isLoading: externalLoading, uploadedFile: propUploadedFile, resumeText: propResumeText }: RightPanelProps) {
+  const [uploadedFile, setUploadedFile] = useState<File | null>(propUploadedFile || null)
+  const [fileContent, setFileContent] = useState<string>(propResumeText || '')
+  const [originalContent, setOriginalContent] = useState<string>(propResumeText || '')
+  const [isFileLoading, setIsFileLoading] = useState<boolean>(false)
+
+  // Sync local state with props when they change (when coming back from results view)
+  useEffect(() => {
+    if (propUploadedFile !== undefined) {
+      setUploadedFile(propUploadedFile)
+    }
+    if (propResumeText !== undefined) {
+      setFileContent(propResumeText)
+      setOriginalContent(propResumeText)
+    }
+  }, [propUploadedFile, propResumeText])
 
   // Check if content has been modified
   const hasChanges = fileContent !== originalContent
+  const isLoading = externalLoading || isFileLoading
 
   const handleFileChange = async (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0]
@@ -21,27 +36,28 @@ function RightPanel({ onFileChange }: RightPanelProps) {
       if (file.type === 'application/vnd.openxmlformats-officedocument.wordprocessingml.document' || 
           file.name.endsWith('.docx')) {
         setUploadedFile(file)
-        setIsLoading(true)
-        onFileChange?.(file)
+        setIsFileLoading(true)
         
         try {
-          // Read file as array buffer
           const arrayBuffer = await file.arrayBuffer()
-          
-          // Convert .docx to plain text using mammoth
           const result = await mammoth.extractRawText({ arrayBuffer })
           const extractedText = result.value
+          
           setFileContent(extractedText)
-          setOriginalContent(extractedText) // Store original content for comparison
+          setOriginalContent(extractedText)
+          
+          // Pass both file and extracted text to parent
+          onFileChange?.(file, extractedText)
+          
+          console.log('Extracted text:', extractedText)
         } catch (error) {
           console.error('Error reading file:', error)
-          alert('Error reading the file. Please try again.')
-          setFileContent('')
+          alert('Error reading the document. Please try again.')
           setUploadedFile(null)
           onFileChange?.(null)
           event.target.value = '' // Reset input
         } finally {
-          setIsLoading(false)
+          setIsFileLoading(false)
         }
       } else {
         alert('Please upload a .docx file only')
@@ -87,9 +103,9 @@ function RightPanel({ onFileChange }: RightPanelProps) {
   }
 
   return (
-    <div className="flex flex-col bg-white rounded-lg shadow-md border border-gray-200 overflow-hidden">
-      <div className="flex items-center justify-between px-4 py-2 border-b border-gray-200 flex-shrink-0">
-        <h2 className="text-base font-semibold text-gray-700">
+    <div className="flex flex-col bg-black/10 backdrop-blur-sm rounded-lg shadow-md border border-gray-700/30 overflow-hidden relative z-10">
+      <div className="flex items-center justify-between px-4 py-2 border-b border-gray-700/30 flex-shrink-0">
+        <h2 className="text-base font-semibold text-green-400 poppins-font">
           Upload Resume (.docx)
         </h2>
         {uploadedFile && (
@@ -97,7 +113,7 @@ function RightPanel({ onFileChange }: RightPanelProps) {
             {hasChanges && (
               <button
                 onClick={handleDownload}
-                className="text-sm text-blue-600 hover:text-blue-700 font-medium px-3 py-1 rounded hover:bg-blue-50 flex items-center gap-1.5 border border-blue-300"
+                className="text-sm text-green-400 hover:text-green-300 font-medium px-3 py-1.5 rounded-md bg-black/20 backdrop-blur-sm border border-green-500/30 hover:border-green-400/50 transition-all duration-200 flex items-center gap-1.5 poppins-font"
                 title="Download modified document"
               >
                 <svg
@@ -118,7 +134,7 @@ function RightPanel({ onFileChange }: RightPanelProps) {
             )}
             <button
               onClick={handleClearFile}
-              className="text-sm text-red-600 hover:text-red-700 font-medium px-2 py-1 rounded hover:bg-red-50"
+              className="text-sm text-green-400 hover:text-green-300 font-medium px-3 py-1.5 rounded-md bg-black/20 backdrop-blur-sm border border-green-500/30 hover:border-green-400/50 transition-all duration-200 poppins-font"
             >
               Remove
             </button>
@@ -129,24 +145,27 @@ function RightPanel({ onFileChange }: RightPanelProps) {
         {isLoading ? (
           <div className="flex items-center justify-center h-full">
             <div className="text-center">
-              <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mx-auto mb-4"></div>
-              <p className="text-gray-600">Loading document...</p>
+              <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-green-500 mx-auto mb-4"></div>
+              <p className="text-gray-300 poppins-font">
+                {externalLoading ? 'Modifying resume...' : 'Loading document...'}
+              </p>
             </div>
           </div>
         ) : uploadedFile && fileContent ? (
           <div className="h-full flex flex-col">
-            <div className="px-4 py-2 bg-gray-50 border-b border-gray-200 flex-shrink-0">
-              <p className="text-sm font-medium text-gray-700 truncate">
-                {uploadedFile.name}
-              </p>
+            <div className="px-4 py-2 bg-black/20 backdrop-blur-sm border-b border-gray-600/30 flex-shrink-0">
+              <div className="flex items-center justify-between">
+                <p className="text-sm font-medium text-green-400 truncate poppins-font">
+                  {uploadedFile.name}
+                </p>
+              </div>
             </div>
             <div className="flex-1 p-4 overflow-hidden">
               <textarea
                 value={fileContent}
                 onChange={(e) => setFileContent(e.target.value)}
-                className="w-full h-full p-4 text-base border border-gray-300 rounded-md resize-none focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent overflow-y-auto"
-                style={{ fontSize: '15px', lineHeight: '1.6', fontFamily: 'inherit' }}
-                placeholder="Document content will appear here..."
+                className="w-full h-full p-4 text-base bg-black/10 backdrop-blur-sm text-white border border-gray-600/30 rounded-md resize-none focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-transparent overflow-y-auto custom-scrollbar poppins-font"
+                style={{ fontSize: '15px', lineHeight: '1.6' }}
               />
             </div>
           </div>
@@ -154,28 +173,16 @@ function RightPanel({ onFileChange }: RightPanelProps) {
           <div className="h-full flex items-center justify-center p-4">
             <label
               htmlFor="file-upload"
-              className="flex flex-col items-center justify-center w-full h-full border-2 border-dashed border-gray-300 rounded-lg cursor-pointer hover:bg-gray-50 hover:border-blue-400 transition-colors"
+              className="flex flex-col items-center justify-center w-full h-full border-2 border-dashed border-gray-600/30 rounded-lg cursor-pointer hover:bg-black/10 hover:border-green-500/50 transition-colors backdrop-blur-sm"
             >
               <div className="flex flex-col items-center justify-center">
-                <svg
-                  className="w-16 h-16 mb-4 text-gray-400"
-                  fill="none"
-                  stroke="currentColor"
-                  viewBox="0 0 24 24"
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth={2}
-                    d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12"
-                  />
+                <svg className="w-16 h-16 mb-4 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12" />
                 </svg>
-                <p className="mb-2 text-sm text-gray-500">
+                <p className="mb-2 text-sm text-gray-400 poppins-font">
                   <span className="font-semibold">Click to upload</span> or drag and drop
                 </p>
-                <p className="text-xs text-gray-500">
-                  .DOCX files only
-                </p>
+                <p className="text-xs text-gray-400 poppins-font">.DOCX files only</p>
               </div>
               <input
                 id="file-upload"
