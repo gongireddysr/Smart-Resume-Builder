@@ -16,6 +16,7 @@ interface ResumeModificationResponse {
   suggestions: string[];
 }
 
+
 function App() {
   const [jobDescription, setJobDescription] = useState<string>('')
   const [uploadedFile, setUploadedFile] = useState<File | null>(null)
