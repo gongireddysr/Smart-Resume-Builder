@@ -81,34 +81,48 @@ function Result({ modificationResult, onBackToEdit }: ResultProps) {
       <AnimatedStars />
       {/* Header */}
       <header className="bg-transparent shadow-sm border-b border-gray-700/30 flex-shrink-0 relative z-10">
-        <div className="px-4 sm:px-6 py-3 sm:py-4 flex flex-col sm:flex-row items-center justify-between gap-3 sm:gap-0">
-          <div className="flex items-center gap-2 sm:gap-4">
+        <div className="px-3 sm:px-6 lg:px-8 py-3 sm:py-4 lg:py-5">
+          {/* Mobile Layout - Stacked */}
+          <div className="flex flex-col items-center gap-3 sm:hidden">
             <img 
               src="/srm-logo.png" 
               alt="SRM Logo" 
-              className="w-8 h-8 sm:w-10 sm:h-10 rounded-full object-cover border-2 border-green-400/50"
+              className="w-10 h-10 rounded-full object-cover border-2 border-green-400/50"
             />
-            <h1 className="text-lg sm:text-xl lg:text-2xl font-bold text-green-400 poppins-font">
+            <h1 
+              className="text-sm font-bold text-green-400 text-center leading-tight px-2"
+              style={{ 
+                fontFamily: "'Carter One', 'Impact', cursive",
+                fontWeight: 400,
+                letterSpacing: '0.01em'
+              }}
+            >
               Smart Resume Modifier
+              <span className="block text-xs mt-1 text-green-300/80">
+                AI That Rewrites Your Resume to Match Any Job
+              </span>
             </h1>
           </div>
-          {/* Desktop/Tablet Buttons - Hidden on Mobile */}
-          <div className="hidden sm:flex flex-row gap-3">
-            <button
-              onClick={handleDocxDownload}
-              className="px-4 py-2 bg-green-600/80 backdrop-blur-sm hover:bg-green-700/80 text-white rounded-md font-medium flex items-center justify-center gap-2 border border-green-500/30 transition-all duration-200 poppins-font"
-            >
-              <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
-              </svg>
-              Download
-            </button>
-            <button
-              onClick={onBackToEdit}
-              className="px-4 py-2 bg-green-600/80 backdrop-blur-sm hover:bg-green-700/80 text-white rounded-md font-medium border border-green-500/30 transition-all duration-200 poppins-font"
-            >
-              Back to Edit
-            </button>
+          
+          {/* Tablet & Desktop Layout - Horizontal */}
+          <div className="hidden sm:flex justify-center items-center">
+            <div className="flex items-center gap-3 md:gap-4 lg:gap-6">
+              <img 
+                src="/srm-logo.png" 
+                alt="SRM Logo" 
+                className="w-10 h-10 md:w-12 md:h-12 lg:w-14 lg:h-14 rounded-full object-cover border-2 border-green-400/50"
+              />
+              <h1 
+                className="text-lg md:text-2xl lg:text-3xl xl:text-4xl font-bold text-green-400 text-center leading-tight"
+                style={{ 
+                  fontFamily: "'Carter One', 'Impact', cursive",
+                  fontWeight: 400,
+                  letterSpacing: '0.02em'
+                }}
+              >
+                Smart Resume Modifier - AI That Rewrites Your Resume to Match Any Job
+              </h1>
+            </div>
           </div>
         </div>
       </header>
@@ -190,8 +204,29 @@ function Result({ modificationResult, onBackToEdit }: ResultProps) {
 
         {/* Right Main Panel - Resume Display */}
         <div className="flex-1 bg-black/10 backdrop-blur-sm flex flex-col overflow-hidden relative z-10 mx-1 lg:mx-0 rounded-lg lg:rounded-none">
-          <div className="px-4 sm:px-6 py-3 sm:py-4 border-b border-gray-700/30 flex-shrink-0">
+          <div className="px-4 sm:px-6 py-3 sm:py-4 border-b border-gray-700/30 flex-shrink-0 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 sm:gap-0">
             <h2 className="text-lg sm:text-xl font-semibold text-green-400 poppins-font">Modified Resume</h2>
+            {/* Desktop/Tablet Buttons */}
+            <div className="hidden sm:flex flex-row gap-2">
+              <button
+                onClick={handleDocxDownload}
+                className="px-3 py-1.5 bg-green-600/90 backdrop-blur-sm hover:bg-green-700/90 text-white rounded-lg font-medium flex items-center justify-center gap-1.5 border border-green-500/40 hover:border-green-400/60 transition-all duration-200 poppins-font text-sm shadow-lg hover:shadow-green-500/20"
+              >
+                <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
+                </svg>
+                Download
+              </button>
+              <button
+                onClick={onBackToEdit}
+                className="px-3 py-1.5 bg-gray-600/90 backdrop-blur-sm hover:bg-gray-700/90 text-white rounded-lg font-medium flex items-center justify-center gap-1.5 border border-gray-500/40 hover:border-gray-400/60 transition-all duration-200 poppins-font text-sm shadow-lg hover:shadow-gray-500/20"
+              >
+                <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
+                </svg>
+                Back to Edit
+              </button>
+            </div>
           </div>
           <div className="flex-1 p-2 sm:p-4 lg:p-6 overflow-y-auto custom-scrollbar">
             <div ref={templateRef} className="bg-white rounded-lg shadow-lg">
@@ -202,7 +237,7 @@ function Result({ modificationResult, onBackToEdit }: ResultProps) {
             <div className="sm:hidden mt-6 flex flex-col gap-3 w-full">
               <button
                 onClick={handleDocxDownload}
-                className="w-full px-4 py-3 bg-green-600/80 backdrop-blur-sm hover:bg-green-700/80 text-white rounded-md font-medium flex items-center justify-center gap-2 border border-green-500/30 transition-all duration-200 poppins-font"
+                className="w-full px-4 py-2.5 bg-green-600/90 backdrop-blur-sm hover:bg-green-700/90 text-white rounded-lg font-medium flex items-center justify-center gap-2 border border-green-500/40 hover:border-green-400/60 transition-all duration-200 poppins-font shadow-lg hover:shadow-green-500/20"
               >
                 <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
@@ -211,8 +246,11 @@ function Result({ modificationResult, onBackToEdit }: ResultProps) {
               </button>
               <button
                 onClick={onBackToEdit}
-                className="w-full px-4 py-3 bg-green-600/80 backdrop-blur-sm hover:bg-green-700/80 text-white rounded-md font-medium border border-green-500/30 transition-all duration-200 poppins-font"
+                className="w-full px-4 py-2.5 bg-gray-600/90 backdrop-blur-sm hover:bg-gray-700/90 text-white rounded-lg font-medium flex items-center justify-center gap-2 border border-gray-500/40 hover:border-gray-400/60 transition-all duration-200 poppins-font shadow-lg hover:shadow-gray-500/20"
               >
+                <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
+                </svg>
                 Back to Edit
               </button>
             </div>

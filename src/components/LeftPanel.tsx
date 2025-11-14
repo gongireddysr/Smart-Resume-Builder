@@ -30,7 +30,7 @@ function LeftPanel({ onJobDescriptionChange, jobDescription: propJobDescription 
     <div className="flex flex-col bg-black/10 backdrop-blur-sm rounded-lg shadow-md border border-gray-700/30 overflow-hidden relative z-10 h-80 lg:h-auto w-full">
       <div className="flex items-center justify-between px-3 sm:px-4 py-2 border-b border-gray-700/30 flex-shrink-0">
         <h2 className="text-sm sm:text-base font-semibold text-green-400 poppins-font">
-          Job Description
+          📋 Paste the Job Description Here
         </h2>
         {jobDescription && (
           <button
@@ -45,7 +45,7 @@ function LeftPanel({ onJobDescriptionChange, jobDescription: propJobDescription 
         <textarea
           value={jobDescription}
           onChange={handleJobDescriptionChange}
-          placeholder="Paste the job description you want to tailor your resume for..."
+          placeholder="Copy any job posting from job boards, company websites, or anywhere online and paste it here. We'll analyze it and tailor your resume to match perfectly!"
           className="w-full h-full p-2 sm:p-4 text-sm sm:text-base bg-black/10 text-white border border-gray-600/30 rounded-md resize-none focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-transparent overflow-y-auto placeholder-gray-400 custom-scrollbar backdrop-blur-sm poppins-font"
           style={{ fontSize: '14px', lineHeight: '1.5' }}
         />
