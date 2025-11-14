@@ -106,7 +106,7 @@ function RightPanel({ onFileChange, isLoading: externalLoading, uploadedFile: pr
     <div className="flex flex-col bg-black/10 backdrop-blur-sm rounded-lg shadow-md border border-gray-700/30 overflow-hidden relative z-10 h-80 lg:h-auto w-full">
       <div className="flex flex-col sm:flex-row sm:items-center justify-between px-3 sm:px-4 py-2 border-b border-gray-700/30 flex-shrink-0 gap-2 sm:gap-0">
         <h2 className="text-sm sm:text-base font-semibold text-green-400 poppins-font">
-          Upload Resume (.docx)
+          📄 Upload Your Resume (.docx files only)
         </h2>
         {uploadedFile && (
           <div className="flex items-center gap-2 sm:gap-3 flex-wrap">

@@ -1,4 +1,4 @@
-import { Document, Packer, Paragraph, TextRun, HeadingLevel, AlignmentType, BorderStyle } from 'docx'
+import { Document, Packer, Paragraph, TextRun, HeadingLevel, AlignmentType, BorderStyle, Table, TableRow, TableCell, WidthType } from 'docx'
 
 interface TemplateData {
   full_name?: string
@@ -159,13 +159,18 @@ function generateContactInfo(data: TemplateData): Paragraph[] {
   return paragraphs
 }
 
-function generateSkillsSection(skills?: string): Paragraph[] {
+function generateSkillsSection(skills?: string): (Paragraph | Table)[] {
   if (!skills) return []
 
   const skillsArray = skills.split(',').map(skill => skill.trim()).filter(skill => skill.length > 0)
   if (skillsArray.length === 0) return []
 
-  const paragraphs = [
+  // Split skills into two columns like the web template
+  const midpoint = Math.ceil(skillsArray.length / 2)
+  const leftColumn = skillsArray.slice(0, midpoint)
+  const rightColumn = skillsArray.slice(midpoint)
+
+  const elements: (Paragraph | Table)[] = [
     new Paragraph({
       children: [
         new TextRun({
@@ -187,29 +192,90 @@ function generateSkillsSection(skills?: string): Paragraph[] {
     }),
   ]
 
-  // Add each skill as individual bullet point for consistent Word formatting
-  skillsArray.forEach((skill) => {
-    paragraphs.push(
-      new Paragraph({
+  // Create table rows for 2-column layout
+  const tableRows: TableRow[] = []
+  const maxRows = Math.max(leftColumn.length, rightColumn.length)
+
+  for (let i = 0; i < maxRows; i++) {
+    const leftSkill = leftColumn[i] || ''
+    const rightSkill = rightColumn[i] || ''
+    
+    tableRows.push(
+      new TableRow({
         children: [
-          new TextRun({
-            text: `• ${skill}`,
-            size: 22, // 11pt
+          new TableCell({
+            children: [
+              new Paragraph({
+                children: [
+                  new TextRun({
+                    text: leftSkill ? `• ${leftSkill}` : '',
+                    size: 22, // 11pt
+                  }),
+                ],
+                spacing: { after: 80 },
+              }),
+            ],
+            width: { size: 50, type: WidthType.PERCENTAGE },
+            borders: {
+              top: { style: BorderStyle.NONE },
+              bottom: { style: BorderStyle.NONE },
+              left: { style: BorderStyle.NONE },
+              right: { style: BorderStyle.NONE },
+            },
+          }),
+          new TableCell({
+            children: [
+              new Paragraph({
+                children: [
+                  new TextRun({
+                    text: rightSkill ? `• ${rightSkill}` : '',
+                    size: 22, // 11pt
+                  }),
+                ],
+                spacing: { after: 80 },
+              }),
+            ],
+            width: { size: 50, type: WidthType.PERCENTAGE },
+            borders: {
+              top: { style: BorderStyle.NONE },
+              bottom: { style: BorderStyle.NONE },
+              left: { style: BorderStyle.NONE },
+              right: { style: BorderStyle.NONE },
+            },
           }),
         ],
-        spacing: { after: 80 },
       })
     )
-  })
+  }
 
-  paragraphs.push(
+  // Add the skills table
+  elements.push(
+    new Table({
+      rows: tableRows,
+      width: {
+        size: 100,
+        type: WidthType.PERCENTAGE,
+      },
+      borders: {
+        top: { style: BorderStyle.NONE },
+        bottom: { style: BorderStyle.NONE },
+        left: { style: BorderStyle.NONE },
+        right: { style: BorderStyle.NONE },
+        insideHorizontal: { style: BorderStyle.NONE },
+        insideVertical: { style: BorderStyle.NONE },
+      },
+    })
+  )
+
+  // Add spacing after skills section
+  elements.push(
     new Paragraph({
       children: [],
       spacing: { after: 200 },
     })
   )
 
-  return paragraphs
+  return elements
 }
 
 function generateExperienceSection(experience?: Array<{
