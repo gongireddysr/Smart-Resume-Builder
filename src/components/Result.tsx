@@ -1,5 +1,6 @@
 
 import { useRef } from 'react'
+import posthog from 'posthog-js'
 import AnimatedStars from '../utils/AnimatedStars'
 import Template from './Template'
 import { generateDocx } from '../utils/docxGenerator'
@@ -65,6 +66,12 @@ function Result({ modificationResult, onBackToEdit }: ResultProps) {
       const jobTitle = modificationResult.job_title_from_jd || 'Position'
       const sanitizedJobTitle = jobTitle.replace(/[^a-zA-Z0-9\s]/g, '').replace(/\s+/g, '_')
       const sanitizedName = candidateName.replace(/[^a-zA-Z0-9\s]/g, '').replace(/\s+/g, '_')
+      
+      // Track DOCX download
+      posthog.capture('docx_downloaded', {
+        job_title: jobTitle,
+        candidate_name: candidateName
+      })
       
       link.download = `${sanitizedName}_${sanitizedJobTitle}.docx`
       document.body.appendChild(link)

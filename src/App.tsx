@@ -1,4 +1,5 @@
 import { useState } from 'react'
+import posthog from 'posthog-js'
 import LeftPanel from './components/LeftPanel'
 import RightPanel from './components/RightPanel'
 import Result from './components/Result'
@@ -84,6 +85,12 @@ function App() {
       return
     }
 
+    // Track modify button click
+    posthog.capture('modify_clicked', {
+      resume_length: resumeText.trim().length,
+      jd_length: jobDescription.trim().length
+    })
+
     setIsLoading(true)
 
     try {
@@ -103,11 +110,25 @@ function App() {
 
       const result: ResumeModificationResponse = await response.json()
       
+      // Track successful modification
+      posthog.capture('modification_completed', {
+        job_title: result.job_title_from_jd,
+        skills_added_count: result.skills_added?.length || 0,
+        skills_removed_count: result.skills_removed?.length || 0,
+        experience_count: result.experience?.length || 0
+      })
+      
       // Store results and show the new layout
       setModificationResult(result)
       setShowResults(true)
     } catch (error: any) {
       console.error('Modification error:', error)
+      
+      // Track modification failure
+      posthog.capture('modification_failed', {
+        error_message: error.message
+      })
+      
       showAlert(`Failed to modify resume: ${error.message}. Please try again or check your internet connection.`)
     } finally {
       setIsLoading(false)
@@ -115,6 +136,9 @@ function App() {
   }
 
   const handleBackToEdit = () => {
+    // Track back to edit action
+    posthog.capture('back_to_edit_clicked')
+    
     setShowResults(false)
     setModificationResult(null)
     // Keep the uploaded file and extracted text intact

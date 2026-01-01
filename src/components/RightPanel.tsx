@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react'
+import posthog from 'posthog-js'
 import mammoth from 'mammoth'
 
 interface RightPanelProps {
@@ -45,6 +46,13 @@ function RightPanel({ onFileChange, isLoading: externalLoading, uploadedFile: pr
           
           setFileContent(extractedText)
           setOriginalContent(extractedText)
+          
+          // Track resume upload
+          posthog.capture('resume_uploaded', {
+            file_name: file.name,
+            file_size: file.size,
+            text_length: extractedText.length
+          })
           
           // Pass both file and extracted text to parent
           onFileChange?.(file, extractedText)
