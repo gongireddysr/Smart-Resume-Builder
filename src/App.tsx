@@ -95,15 +95,20 @@ function App() {
       // Store results and show the new layout
       setModificationResult(result)
       setShowResults(true)
-    } catch (error: any) {
+    } catch (error: unknown) {
       console.error('Modification error:', error)
-      
+
+      const message =
+        error instanceof Error ? error.message : 'An unexpected error occurred'
+
       // Track modification failure
       posthog.capture('modification_failed', {
-        error_message: error.message
+        error_message: message,
       })
-      
-      showAlert(`Failed to modify resume: ${error.message}. Please try again or check your internet connection.`)
+
+      showAlert(
+        `Failed to modify resume: ${message}. Please try again or check your internet connection.`
+      )
     } finally {
       setIsLoading(false)
     }
