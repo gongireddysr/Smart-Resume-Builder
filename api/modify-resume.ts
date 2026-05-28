@@ -1,6 +1,14 @@
 // api/modify-resume.ts
+import { config as loadEnv } from "dotenv";
+import { resolve } from "path";
 import OpenAI from "openai";
 import type { VercelRequest, VercelResponse } from "@vercel/node";
+
+// vercel dev does not always inject .env.local into /api serverless routes
+if (!process.env.OPENAI_API_KEY) {
+  loadEnv({ path: resolve(process.cwd(), ".env.local") });
+  loadEnv({ path: resolve(process.cwd(), ".env") });
+}
 
 interface ResumeModificationRequest {
   resumeText: string;
