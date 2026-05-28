@@ -1,20 +1,4 @@
-interface TemplateData {
-  full_name?: string
-  email?: string
-  phone?: string
-  location?: string
-  urls?: string
-  professional_summary?: string
-  skills?: string
-  experience?: Array<{
-    company: string
-    job_title: string
-    start_date: string
-    end_date: string
-    bullet_points: string[]
-  }>
-  education?: string
-}
+import type { TemplateData } from '../types/resume'
 
 interface TemplateProps {
   data: TemplateData

@@ -4,32 +4,7 @@ import posthog from 'posthog-js'
 import AnimatedStars from '../utils/AnimatedStars'
 import Template from './Template'
 import { generateDocx } from '../utils/docxGenerator'
-
-interface ResumeModificationResponse {
-  job_title_from_jd: string;
-  full_name: string;
-  email: string;
-  phone: string;
-  location: string;
-  urls: string;
-  professional_summary: string;
-  skills: string;
-  experience: Array<{
-    company: string;
-    job_title: string;
-    start_date: string;
-    end_date: string;
-    bullet_points: string[];
-  }>;
-  education: string;
-  change_summary: string[];
-  skills_added: string[];
-  skills_removed: string[];
-  skills_boosted: string[];
-  experience_transformed: string[];
-  warnings: string[];
-  suggestions: string[];
-}
+import type { ResumeModificationResponse } from '../types/resume'
 
 interface ResultProps {
   modificationResult: ResumeModificationResponse;

@@ -1,22 +1,5 @@
 import { Document, Packer, Paragraph, TextRun, HeadingLevel, AlignmentType, BorderStyle, Table, TableRow, TableCell, WidthType } from 'docx'
-
-interface TemplateData {
-  full_name?: string
-  email?: string
-  phone?: string
-  location?: string
-  urls?: string
-  professional_summary?: string
-  skills?: string
-  experience?: Array<{
-    company: string
-    job_title: string
-    start_date: string
-    end_date: string
-    bullet_points: string[]
-  }>
-  education?: string
-}
+import type { ResumeExperience, TemplateData } from '../types/resume'
 
 export async function generateDocx(data: TemplateData): Promise<Blob> {
   const doc = new Document({
@@ -278,13 +261,7 @@ function generateSkillsSection(skills?: string): (Paragraph | Table)[] {
   return elements
 }
 
-function generateExperienceSection(experience?: Array<{
-  company: string
-  job_title: string
-  start_date: string
-  end_date: string
-  bullet_points: string[]
-}>): Paragraph[] {
+function generateExperienceSection(experience?: ResumeExperience[]): Paragraph[] {
   if (!experience || experience.length === 0) return []
 
   const paragraphs = [
