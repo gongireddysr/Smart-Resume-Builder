@@ -58,7 +58,7 @@ function RightPanel({ onFileChange, isLoading: externalLoading, uploadedFile: pr
           onFileChange?.(file, extractedText)
           
           console.log('Extracted text:', extractedText)
-        } catch (error) {
+        } catch (error: unknown) {
           console.error('Error reading file:', error)
           alert('Error reading the document. Please try again.')
           setUploadedFile(null)
@@ -104,7 +104,7 @@ function RightPanel({ onFileChange, isLoading: externalLoading, uploadedFile: pr
       link.click()
       document.body.removeChild(link)
       URL.revokeObjectURL(url)
-    } catch (error) {
+    } catch (error: unknown) {
       console.error('Error downloading file:', error)
       alert('Error downloading the file. Please try again.')
     }
