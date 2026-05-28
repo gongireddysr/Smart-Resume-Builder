@@ -3,40 +3,15 @@ import { config as loadEnv } from "dotenv";
 import { resolve } from "path";
 import OpenAI from "openai";
 import type { VercelRequest, VercelResponse } from "@vercel/node";
+import type {
+  ResumeModificationRequest,
+  ResumeModificationResponse,
+} from "../src/types/resume";
 
 // vercel dev does not always inject .env.local into /api serverless routes
 if (!process.env.OPENAI_API_KEY) {
   loadEnv({ path: resolve(process.cwd(), ".env.local") });
   loadEnv({ path: resolve(process.cwd(), ".env") });
-}
-
-interface ResumeModificationRequest {
-  resumeText: string;
-  jobDescription: string;
-}
-
-interface ResumeModificationResponse {
-  job_title_from_jd: string;
-  full_name: string;
-  email: string;
-  phone: string;
-  location: string;
-  urls: string;
-  professional_summary: string;
-  skills: string;
-  experience: Array<{
-    company: string;
-    job_title: string;
-    start_date: string;
-    end_date: string;
-    bullet_points: string[];
-  }>;
-  education: string;
-  change_summary: string[];
-  skills_added: string[];
-  skills_boosted: string[];
-  warnings: string[];
-  suggestions: string[];
 }
 
 const EXPERT_HR_SYSTEM_PROMPT = `You are an expert HR lead, professional resume writer, and ATS optimization specialist with over 20 years of experience across ALL industries including technology, healthcare, finance, sales, marketing, consulting, manufacturing, government, education, and specialized fields. You have deep knowledge of Applicant Tracking Systems (ATS), modern keyword strategies, and hiring psychology for every professional domain.
