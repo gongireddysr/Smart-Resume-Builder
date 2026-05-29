@@ -1,29 +1,15 @@
-import { useState, useEffect } from 'react'
-
 interface LeftPanelProps {
-  onJobDescriptionChange?: (text: string) => void
-  jobDescription?: string
+  jobDescription: string
+  onJobDescriptionChange: (text: string) => void
 }
 
-function LeftPanel({ onJobDescriptionChange, jobDescription: propJobDescription }: LeftPanelProps) {
-  const [jobDescription, setJobDescription] = useState<string>(propJobDescription || '')
-
-  // Sync local state with props when they change (when coming back from results view)
-  useEffect(() => {
-    if (propJobDescription !== undefined) {
-      setJobDescription(propJobDescription)
-    }
-  }, [propJobDescription])
-
+function LeftPanel({ jobDescription, onJobDescriptionChange }: LeftPanelProps) {
   const handleJobDescriptionChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
-    const newText = e.target.value
-    setJobDescription(newText)
-    onJobDescriptionChange?.(newText)
+    onJobDescriptionChange(e.target.value)
   }
 
   const handleClearJobDescription = () => {
-    setJobDescription('')
-    onJobDescriptionChange?.('')
+    onJobDescriptionChange('')
   }
 
   return (
@@ -55,4 +41,3 @@ function LeftPanel({ onJobDescriptionChange, jobDescription: propJobDescription 
 }
 
 export default LeftPanel
-
