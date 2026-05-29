@@ -10,7 +10,6 @@
     "preview": "vite preview"
   },
   "dependencies": {
-    "@supabase/supabase-js": "^2.80.0",
     "@tailwindcss/vite": "^4.1.16",
     "docx": "^9.5.1",
     "dotenv": "^17.4.2",
@@ -19,7 +18,6 @@
     "posthog-js": "^1.311.0",
     "react": "^19.1.1",
     "react-dom": "^19.1.1",
-    "superdoc": "^0.28.4",
     "tailwindcss": "^4.1.16"
   },
   "devDependencies": {

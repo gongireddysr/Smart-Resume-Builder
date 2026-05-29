@@ -3,10 +3,8 @@ import { config as loadEnv } from "dotenv";
 import { resolve } from "path";
 import OpenAI from "openai";
 import type { VercelRequest, VercelResponse } from "@vercel/node";
-import type {
-  ResumeModificationRequest,
-  ResumeModificationResponse,
-} from "../src/types/resume";
+import type { ResumeModificationRequest } from "../src/types/resume";
+import { isResumeModificationResponse } from "../src/utils/validateResumeResponse";
 
 // vercel dev does not always inject .env.local into /api serverless routes
 if (!process.env.OPENAI_API_KEY) {
@@ -604,13 +602,12 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
     
     // Parse and validate JSON response
     try {
-      const parsedResult: ResumeModificationResponse = JSON.parse(result);
-      
-      // Validate required fields
-      if (!parsedResult.full_name || !parsedResult.professional_summary || !Array.isArray(parsedResult.change_summary)) {
+      const parsedResult: unknown = JSON.parse(result);
+
+      if (!isResumeModificationResponse(parsedResult)) {
         throw new Error("Invalid response structure");
       }
-      
+
       return res.status(200).json(parsedResult);
     } catch (parseError) {
       console.error("JSON parsing error:", parseError);
@@ -620,11 +617,12 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
         debug: process.env.NODE_ENV === 'development' ? result : undefined
       });
     }
-  } catch (err: any) {
+  } catch (err: unknown) {
     console.error("OpenAI API error:", err);
-    return res.status(500).json({ 
+    const message = err instanceof Error ? err.message : "Unknown error";
+    return res.status(500).json({
       error: "Failed to modify resume. Please try again.",
-      details: err.message
+      details: message,
     });
   }
 }

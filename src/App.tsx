@@ -1,13 +1,16 @@
-import { useState } from 'react'
+import { lazy, Suspense, useState } from 'react'
 import posthog from 'posthog-js'
 import LeftPanel from './components/LeftPanel'
 import RightPanel from './components/RightPanel'
-import Result from './components/Result'
+import Header from './components/Header'
 import LoadingSkeleton from './utils/LoadingSkeleton'
 import AnimatedStars from './utils/AnimatedStars'
 import CustomAlert from './utils/CustomAlert'
+import { isResumeModificationResponse } from './utils/validateResumeResponse'
 import type { ResumeModificationResponse } from './types/resume'
 import './App.css'
+
+const Result = lazy(() => import('./components/Result'))
 
 function App() {
   const [jobDescription, setJobDescription] = useState<string>('')
@@ -19,15 +22,18 @@ function App() {
   const [showResults, setShowResults] = useState<boolean>(false)
   const [alertVisible, setAlertVisible] = useState(false)
   const [alertMessage, setAlertMessage] = useState('')
+  const [alertTitle, setAlertTitle] = useState('Notice')
 
-  const showAlert = (message: string) => {
+  const showAlert = (message: string, title = 'Missing Information') => {
     setAlertMessage(message)
+    setAlertTitle(title)
     setAlertVisible(true)
   }
 
   const hideAlert = () => {
     setAlertVisible(false)
     setAlertMessage('')
+    setAlertTitle('Notice')
   }
 
   const handleJobDescriptionChange = (text: string) => {
@@ -89,8 +95,12 @@ function App() {
         throw new Error(errorData.error || `Request failed: ${response.status}`)
       }
 
-      const result: ResumeModificationResponse = await response.json()
-      
+      const result: unknown = await response.json()
+
+      if (!isResumeModificationResponse(result)) {
+        throw new Error('Invalid response from server. Please try again.')
+      }
+
       // Track successful modification
       posthog.capture('modification_completed', {
         job_title: result.job_title_from_jd,
@@ -140,10 +150,21 @@ function App() {
   // Show results layout
   if (showResults && modificationResult) {
     return (
-      <Result 
-        modificationResult={modificationResult}
-        onBackToEdit={handleBackToEdit}
-      />
+      <>
+        <Suspense fallback={<LoadingSkeleton />}>
+          <Result
+            modificationResult={modificationResult}
+            onBackToEdit={handleBackToEdit}
+            onShowAlert={showAlert}
+          />
+        </Suspense>
+        <CustomAlert
+          isVisible={alertVisible}
+          message={alertMessage}
+          title={alertTitle}
+          onClose={hideAlert}
+        />
+      </>
     )
   }
 
@@ -151,61 +172,7 @@ function App() {
   return (
     <div className="min-h-screen bg-black flex flex-col relative">
       <AnimatedStars />
-      {/* Header */}
-      <header className="bg-transparent shadow-sm border-b border-gray-700/30 flex-shrink-0 relative z-10">
-        <div className="px-3 sm:px-6 lg:px-8 py-3 sm:py-4 lg:py-5">
-          {/* Mobile Layout - Stacked */}
-          <div className="flex flex-col items-center gap-3 sm:hidden">
-            <img 
-              src="/srm-logo.png" 
-              alt="SRM Logo" 
-              className="w-10 h-10 rounded-full object-cover border-2 border-green-400/50"
-              onError={(e) => {
-                console.error('Logo failed to load:', e)
-                e.currentTarget.style.display = 'none'
-              }}
-            />
-            <h1 
-              className="text-sm font-bold text-green-400 text-center leading-tight px-2"
-              style={{ 
-                fontFamily: "'Carter One', 'Impact', cursive",
-                fontWeight: 400,
-                letterSpacing: '0.01em'
-              }}
-            >
-              Smart Resume Modifier
-              <span className="block text-xs mt-1 text-green-300/80">
-                AI That Rewrites Your Resume to Match Any Job
-              </span>
-            </h1>
-          </div>
-          
-          {/* Tablet & Desktop Layout - Horizontal */}
-          <div className="hidden sm:flex justify-center items-center">
-            <div className="flex items-center gap-3 md:gap-4 lg:gap-6">
-              <img 
-                src="/srm-logo.png" 
-                alt="SRM Logo" 
-                className="w-10 h-10 md:w-12 md:h-12 lg:w-14 lg:h-14 rounded-full object-cover border-2 border-green-400/50"
-                onError={(e) => {
-                  console.error('Logo failed to load:', e)
-                  e.currentTarget.style.display = 'none'
-                }}
-              />
-              <h1 
-                className="text-lg md:text-2xl lg:text-3xl xl:text-4xl font-bold text-green-400 text-center leading-tight"
-                style={{ 
-                  fontFamily: "'Carter One', 'Impact', cursive",
-                  fontWeight: 400,
-                  letterSpacing: '0.02em'
-                }}
-              >
-                Smart Resume Modifier - AI That Rewrites Your Resume to Match Any Job
-              </h1>
-            </div>
-          </div>
-        </div>
-      </header>
+      <Header />
 
       {/* Split Screen Container - Responsive */}
       <div className="flex-1 flex flex-col lg:grid lg:grid-cols-2 gap-2 lg:gap-4 p-1 sm:p-4 overflow-auto">
@@ -219,6 +186,7 @@ function App() {
         <RightPanel 
           onFileChange={handleFileChange}
           onResumeTextChange={handleResumeTextChange}
+          onShowAlert={showAlert}
           isLoading={isLoading}
           uploadedFile={uploadedFile}
           resumeText={resumeText}
@@ -264,6 +232,7 @@ function App() {
       <CustomAlert 
         isVisible={alertVisible}
         message={alertMessage}
+        title={alertTitle}
         onClose={hideAlert}
       />
     </div>

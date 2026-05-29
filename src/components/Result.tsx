@@ -1,18 +1,17 @@
-
-import { useRef } from 'react'
 import posthog from 'posthog-js'
 import AnimatedStars from '../utils/AnimatedStars'
+import Header from './Header'
 import Template from './Template'
 import { generateDocx } from '../utils/docxGenerator'
 import type { ResumeModificationResponse } from '../types/resume'
 
 interface ResultProps {
-  modificationResult: ResumeModificationResponse;
-  onBackToEdit: () => void;
+  modificationResult: ResumeModificationResponse
+  onBackToEdit: () => void
+  onShowAlert: (message: string, title?: string) => void
 }
 
-function Result({ modificationResult, onBackToEdit }: ResultProps) {
-  const templateRef = useRef<HTMLDivElement>(null)
+function Result({ modificationResult, onBackToEdit, onShowAlert }: ResultProps) {
   
   // Use the structured data directly from API response
   const templateData = {
@@ -53,61 +52,15 @@ function Result({ modificationResult, onBackToEdit }: ResultProps) {
       link.click()
       document.body.removeChild(link)
       URL.revokeObjectURL(url)
-    } catch (error) {
+    } catch (error: unknown) {
       console.error('Error generating DOCX:', error)
-      alert('Error generating DOCX file. Please try again.')
+      onShowAlert('Error generating DOCX file. Please try again.', 'Download failed')
     }
   }
   return (
     <div className="min-h-screen bg-black flex flex-col relative">
       <AnimatedStars />
-      {/* Header */}
-      <header className="bg-transparent shadow-sm border-b border-gray-700/30 flex-shrink-0 relative z-10">
-        <div className="px-3 sm:px-6 lg:px-8 py-3 sm:py-4 lg:py-5">
-          {/* Mobile Layout - Stacked */}
-          <div className="flex flex-col items-center gap-3 sm:hidden">
-            <img 
-              src="/srm-logo.png" 
-              alt="SRM Logo" 
-              className="w-10 h-10 rounded-full object-cover border-2 border-green-400/50"
-            />
-            <h1 
-              className="text-sm font-bold text-green-400 text-center leading-tight px-2"
-              style={{ 
-                fontFamily: "'Carter One', 'Impact', cursive",
-                fontWeight: 400,
-                letterSpacing: '0.01em'
-              }}
-            >
-              Smart Resume Modifier
-              <span className="block text-xs mt-1 text-green-300/80">
-                AI That Rewrites Your Resume to Match Any Job
-              </span>
-            </h1>
-          </div>
-          
-          {/* Tablet & Desktop Layout - Horizontal */}
-          <div className="hidden sm:flex justify-center items-center">
-            <div className="flex items-center gap-3 md:gap-4 lg:gap-6">
-              <img 
-                src="/srm-logo.png" 
-                alt="SRM Logo" 
-                className="w-10 h-10 md:w-12 md:h-12 lg:w-14 lg:h-14 rounded-full object-cover border-2 border-green-400/50"
-              />
-              <h1 
-                className="text-lg md:text-2xl lg:text-3xl xl:text-4xl font-bold text-green-400 text-center leading-tight"
-                style={{ 
-                  fontFamily: "'Carter One', 'Impact', cursive",
-                  fontWeight: 400,
-                  letterSpacing: '0.02em'
-                }}
-              >
-                Smart Resume Modifier - AI That Rewrites Your Resume to Match Any Job
-              </h1>
-            </div>
-          </div>
-        </div>
-      </header>
+      <Header />
 
       {/* Results Layout: Responsive */}
       <div className="flex-1 flex flex-col lg:flex-row overflow-auto">
@@ -211,7 +164,7 @@ function Result({ modificationResult, onBackToEdit }: ResultProps) {
             </div>
           </div>
           <div className="flex-1 p-2 sm:p-4 lg:p-6 overflow-y-auto custom-scrollbar">
-            <div ref={templateRef} className="bg-white rounded-lg shadow-lg">
+            <div className="bg-white rounded-lg shadow-lg">
               <Template data={templateData} />
             </div>
             

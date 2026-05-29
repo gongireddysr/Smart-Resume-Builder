@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useRef, useState } from 'react'
 import posthog from 'posthog-js'
 import mammoth from 'mammoth'
 
@@ -8,18 +8,21 @@ interface RightPanelProps {
   resumeTextBaseline: string
   onFileChange: (file: File | null, extractedText?: string) => void
   onResumeTextChange: (text: string) => void
+  onShowAlert: (message: string, title?: string) => void
   isLoading?: boolean
 }
 
 function RightPanel({
   onFileChange,
   onResumeTextChange,
+  onShowAlert,
   isLoading: externalLoading,
   uploadedFile,
   resumeText,
   resumeTextBaseline,
 }: RightPanelProps) {
   const [isFileLoading, setIsFileLoading] = useState<boolean>(false)
+  const fileInputRef = useRef<HTMLInputElement>(null)
 
   const hasChanges = resumeText !== resumeTextBaseline
   const isLoading = externalLoading || isFileLoading
@@ -46,29 +49,25 @@ function RightPanel({
           })
           
           onFileChange(file, extractedText)
-          
-          console.log('Extracted text:', extractedText)
         } catch (error: unknown) {
           console.error('Error reading file:', error)
-          alert('Error reading the document. Please try again.')
+          onShowAlert('Error reading the document. Please try again.', 'Upload failed')
           onFileChange(null)
-          event.target.value = '' // Reset input
+          event.target.value = ''
         } finally {
           setIsFileLoading(false)
         }
       } else {
-        alert('Please upload a .docx file only')
-        event.target.value = '' // Reset input
+        onShowAlert('Please upload a .docx file only.', 'Invalid file')
+        event.target.value = ''
       }
     }
   }
 
   const handleClearFile = () => {
     onFileChange(null)
-    // Reset file input
-    const fileInput = document.getElementById('file-upload') as HTMLInputElement
-    if (fileInput) {
-      fileInput.value = ''
+    if (fileInputRef.current) {
+      fileInputRef.current.value = ''
     }
   }
 
@@ -90,7 +89,7 @@ function RightPanel({
       URL.revokeObjectURL(url)
     } catch (error: unknown) {
       console.error('Error downloading file:', error)
-      alert('Error downloading the file. Please try again.')
+      onShowAlert('Error downloading the file. Please try again.', 'Download failed')
     }
   }
 
@@ -177,6 +176,7 @@ function RightPanel({
                 <p className="text-xs text-gray-400 poppins-font">.DOCX files only</p>
               </div>
               <input
+                ref={fileInputRef}
                 id="file-upload"
                 type="file"
                 accept=".docx,application/vnd.openxmlformats-officedocument.wordprocessingml.document"
