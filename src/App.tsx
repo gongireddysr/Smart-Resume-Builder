@@ -13,6 +13,7 @@ function App() {
   const [jobDescription, setJobDescription] = useState<string>('')
   const [uploadedFile, setUploadedFile] = useState<File | null>(null)
   const [resumeText, setResumeText] = useState<string>('')
+  const [resumeTextBaseline, setResumeTextBaseline] = useState<string>('')
   const [isLoading, setIsLoading] = useState<boolean>(false)
   const [modificationResult, setModificationResult] = useState<ResumeModificationResponse | null>(null)
   const [showResults, setShowResults] = useState<boolean>(false)
@@ -35,11 +36,17 @@ function App() {
 
   const handleFileChange = (file: File | null, extractedText?: string) => {
     setUploadedFile(file)
-    if (extractedText) {
+    if (extractedText !== undefined) {
       setResumeText(extractedText)
+      setResumeTextBaseline(extractedText)
     } else if (!file) {
       setResumeText('')
+      setResumeTextBaseline('')
     }
+  }
+
+  const handleResumeTextChange = (text: string) => {
+    setResumeText(text)
   }
 
   const handleModify = async () => {
@@ -211,9 +218,11 @@ function App() {
         {/* Right Side - File Upload */}
         <RightPanel 
           onFileChange={handleFileChange}
+          onResumeTextChange={handleResumeTextChange}
           isLoading={isLoading}
           uploadedFile={uploadedFile}
           resumeText={resumeText}
+          resumeTextBaseline={resumeTextBaseline}
         />
       </div>
 

@@ -1,33 +1,27 @@
-import { useState, useEffect } from 'react'
+import { useState } from 'react'
 import posthog from 'posthog-js'
 import mammoth from 'mammoth'
 
 interface RightPanelProps {
-  onFileChange?: (file: File | null, extractedText?: string) => void
+  uploadedFile: File | null
+  resumeText: string
+  resumeTextBaseline: string
+  onFileChange: (file: File | null, extractedText?: string) => void
+  onResumeTextChange: (text: string) => void
   isLoading?: boolean
-  uploadedFile?: File | null
-  resumeText?: string
 }
 
-function RightPanel({ onFileChange, isLoading: externalLoading, uploadedFile: propUploadedFile, resumeText: propResumeText }: RightPanelProps) {
-  const [uploadedFile, setUploadedFile] = useState<File | null>(propUploadedFile || null)
-  const [fileContent, setFileContent] = useState<string>(propResumeText || '')
-  const [originalContent, setOriginalContent] = useState<string>(propResumeText || '')
+function RightPanel({
+  onFileChange,
+  onResumeTextChange,
+  isLoading: externalLoading,
+  uploadedFile,
+  resumeText,
+  resumeTextBaseline,
+}: RightPanelProps) {
   const [isFileLoading, setIsFileLoading] = useState<boolean>(false)
 
-  // Sync local state with props when they change (when coming back from results view)
-  useEffect(() => {
-    if (propUploadedFile !== undefined) {
-      setUploadedFile(propUploadedFile)
-    }
-    if (propResumeText !== undefined) {
-      setFileContent(propResumeText)
-      setOriginalContent(propResumeText)
-    }
-  }, [propUploadedFile, propResumeText])
-
-  // Check if content has been modified
-  const hasChanges = fileContent !== originalContent
+  const hasChanges = resumeText !== resumeTextBaseline
   const isLoading = externalLoading || isFileLoading
 
   const handleFileChange = async (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -36,16 +30,13 @@ function RightPanel({ onFileChange, isLoading: externalLoading, uploadedFile: pr
       // Validate file type
       if (file.type === 'application/vnd.openxmlformats-officedocument.wordprocessingml.document' || 
           file.name.endsWith('.docx')) {
-        setUploadedFile(file)
+        onFileChange(file)
         setIsFileLoading(true)
         
         try {
           const arrayBuffer = await file.arrayBuffer()
           const result = await mammoth.extractRawText({ arrayBuffer })
           const extractedText = result.value
-          
-          setFileContent(extractedText)
-          setOriginalContent(extractedText)
           
           // Track resume upload
           posthog.capture('resume_uploaded', {
@@ -54,15 +45,13 @@ function RightPanel({ onFileChange, isLoading: externalLoading, uploadedFile: pr
             text_length: extractedText.length
           })
           
-          // Pass both file and extracted text to parent
-          onFileChange?.(file, extractedText)
+          onFileChange(file, extractedText)
           
           console.log('Extracted text:', extractedText)
         } catch (error: unknown) {
           console.error('Error reading file:', error)
           alert('Error reading the document. Please try again.')
-          setUploadedFile(null)
-          onFileChange?.(null)
+          onFileChange(null)
           event.target.value = '' // Reset input
         } finally {
           setIsFileLoading(false)
@@ -75,10 +64,7 @@ function RightPanel({ onFileChange, isLoading: externalLoading, uploadedFile: pr
   }
 
   const handleClearFile = () => {
-    setUploadedFile(null)
-    setFileContent('')
-    setOriginalContent('')
-    onFileChange?.(null)
+    onFileChange(null)
     // Reset file input
     const fileInput = document.getElementById('file-upload') as HTMLInputElement
     if (fileInput) {
@@ -87,15 +73,13 @@ function RightPanel({ onFileChange, isLoading: externalLoading, uploadedFile: pr
   }
 
   const handleDownload = () => {
-    if (!fileContent || !uploadedFile) {
+    if (!resumeText || !uploadedFile) {
       return
     }
 
     try {
-      // Create a text blob from the file content
-      const blob = new Blob([fileContent], { type: 'text/plain' })
+      const blob = new Blob([resumeText], { type: 'text/plain' })
       
-      // Create download link
       const url = URL.createObjectURL(blob)
       const link = document.createElement('a')
       link.href = url
@@ -159,7 +143,7 @@ function RightPanel({ onFileChange, isLoading: externalLoading, uploadedFile: pr
               </p>
             </div>
           </div>
-        ) : uploadedFile && fileContent ? (
+        ) : uploadedFile && resumeText ? (
           <div className="h-full flex flex-col">
             <div className="px-4 py-2 bg-black/20 backdrop-blur-sm border-b border-gray-600/30 flex-shrink-0">
               <div className="flex items-center justify-between">
@@ -170,8 +154,8 @@ function RightPanel({ onFileChange, isLoading: externalLoading, uploadedFile: pr
             </div>
             <div className="flex-1 p-2 sm:p-4 overflow-hidden">
               <textarea
-                value={fileContent}
-                onChange={(e) => setFileContent(e.target.value)}
+                value={resumeText}
+                onChange={(e) => onResumeTextChange(e.target.value)}
                 className="w-full h-full p-2 sm:p-4 text-sm sm:text-base bg-black/10 backdrop-blur-sm text-white border border-gray-600/30 rounded-md resize-none focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-transparent overflow-y-auto custom-scrollbar poppins-font"
                 style={{ fontSize: '14px', lineHeight: '1.5' }}
               />
@@ -208,4 +192,3 @@ function RightPanel({ onFileChange, isLoading: externalLoading, uploadedFile: pr
 }
 
 export default RightPanel
-
