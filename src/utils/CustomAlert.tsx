@@ -1,61 +1,75 @@
 interface CustomAlertProps {
-  isVisible: boolean;
-  message: string;
-  onClose: () => void;
+  isVisible: boolean
+  message: string
+  onClose: () => void
+  title?: string
 }
 
-function CustomAlert({ isVisible, message, onClose }: CustomAlertProps) {
-  if (!isVisible) return null;
+function CustomAlert({
+  isVisible,
+  message,
+  onClose,
+  title = 'Notice',
+}: CustomAlertProps) {
+  if (!isVisible) return null
 
   const handleBackdropClick = (e: React.MouseEvent) => {
     if (e.target === e.currentTarget) {
-      onClose();
+      onClose()
     }
-  };
+  }
 
   const handleKeyDown = (e: React.KeyboardEvent) => {
     if (e.key === 'Escape') {
-      onClose();
+      onClose()
     }
-  };
+  }
 
   return (
-    <div 
+    <div
       className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center z-50"
+      role="dialog"
+      aria-modal="true"
+      aria-labelledby="custom-alert-title"
+      aria-describedby="custom-alert-message"
       onClick={handleBackdropClick}
       onKeyDown={handleKeyDown}
       tabIndex={-1}
     >
       <div className="bg-black/20 backdrop-blur-md border border-red-500/50 rounded-lg p-6 max-w-md mx-4 shadow-2xl animate-fade-in">
         <div className="flex items-start gap-4">
-          {/* Warning Icon */}
           <div className="flex-shrink-0">
-            <svg 
-              className="w-6 h-6 text-red-400" 
-              fill="none" 
-              stroke="currentColor" 
+            <svg
+              className="w-6 h-6 text-red-400"
+              fill="none"
+              stroke="currentColor"
               viewBox="0 0 24 24"
+              aria-hidden="true"
             >
-              <path 
-                strokeLinecap="round" 
-                strokeLinejoin="round" 
-                strokeWidth={2} 
-                d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.964-.833-2.732 0L4.082 16.5c-.77.833.192 2.5 1.732 2.5z" 
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth={2}
+                d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.964-.833-2.732 0L4.082 16.5c-.77.833.192 2.5 1.732 2.5z"
               />
             </svg>
           </div>
-          
-          {/* Message Content */}
+
           <div className="flex-1">
-            <h3 className="text-lg font-semibold text-red-400 mb-2 poppins-font">
-              Missing Information
+            <h3
+              id="custom-alert-title"
+              className="text-lg font-semibold text-red-400 mb-2 poppins-font"
+            >
+              {title}
             </h3>
-            <p className="text-gray-300 text-sm leading-relaxed poppins-font">
+            <p
+              id="custom-alert-message"
+              className="text-gray-300 text-sm leading-relaxed poppins-font"
+            >
               {message}
             </p>
           </div>
-          
-          {/* Close Button */}
+
           <button
             onClick={onClose}
             className="flex-shrink-0 text-gray-400 hover:text-white transition-colors"
@@ -66,8 +80,7 @@ function CustomAlert({ isVisible, message, onClose }: CustomAlertProps) {
             </svg>
           </button>
         </div>
-        
-        {/* Action Button */}
+
         <div className="mt-4 flex justify-end">
           <button
             onClick={onClose}
@@ -78,7 +91,7 @@ function CustomAlert({ isVisible, message, onClose }: CustomAlertProps) {
         </div>
       </div>
     </div>
-  );
+  )
 }
 
-export default CustomAlert;
+export default CustomAlert
