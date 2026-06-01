@@ -1,0 +1,7 @@
+{
+  "functions": {
+    "api/modify-resume.ts": {
+      "maxDuration": 60
+    }
+  }
+}

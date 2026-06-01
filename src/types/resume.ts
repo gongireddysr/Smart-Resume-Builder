@@ -18,9 +18,12 @@ export interface TemplateData {
   education?: string
 }
 
+import type { UserPreferences } from './userPreferences'
+
 export interface ResumeModificationRequest {
   resumeText: string
   jobDescription: string
+  userPreferences?: UserPreferences
 }
 
 export interface ResumeModificationResponse {

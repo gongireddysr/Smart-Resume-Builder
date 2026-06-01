@@ -2,12 +2,14 @@ import { lazy, Suspense, useState } from 'react'
 import posthog from 'posthog-js'
 import LeftPanel from './components/LeftPanel'
 import RightPanel from './components/RightPanel'
+import PreferencesPanel from './components/PreferencesPanel'
 import Header from './components/Header'
 import LoadingSkeleton from './utils/LoadingSkeleton'
 import AnimatedStars from './utils/AnimatedStars'
 import CustomAlert from './utils/CustomAlert'
 import { isResumeModificationResponse } from './utils/validateResumeResponse'
 import type { ResumeModificationResponse } from './types/resume'
+import { DEFAULT_USER_PREFERENCES, type UserPreferences } from './types/userPreferences'
 import './App.css'
 
 const Result = lazy(() => import('./components/Result'))
@@ -23,6 +25,9 @@ function App() {
   const [alertVisible, setAlertVisible] = useState(false)
   const [alertMessage, setAlertMessage] = useState('')
   const [alertTitle, setAlertTitle] = useState('Notice')
+  const [userPreferences, setUserPreferences] = useState<UserPreferences>(
+    DEFAULT_USER_PREFERENCES
+  )
 
   const showAlert = (message: string, title = 'Missing Information') => {
     setAlertMessage(message)
@@ -75,7 +80,12 @@ function App() {
     // Track modify button click
     posthog.capture('modify_clicked', {
       resume_length: resumeText.trim().length,
-      jd_length: jobDescription.trim().length
+      jd_length: jobDescription.trim().length,
+      output_length: userPreferences.output_length,
+      focus: userPreferences.focus,
+      ats_optimization: userPreferences.ats_optimization,
+      tone: userPreferences.tone,
+      has_custom_instructions: userPreferences.custom_instructions.trim().length > 0,
     })
 
     setIsLoading(true)
@@ -87,6 +97,7 @@ function App() {
         body: JSON.stringify({
           resumeText: resumeText.trim(),
           jobDescription: jobDescription.trim(),
+          userPreferences,
         }),
       })
 
@@ -193,6 +204,11 @@ function App() {
           resumeTextBaseline={resumeTextBaseline}
         />
       </div>
+
+      <PreferencesPanel
+        preferences={userPreferences}
+        onPreferencesChange={setUserPreferences}
+      />
 
       {/* Modify Button - Bottom Center */}
       <div className="flex-shrink-0 bg-transparent border-t border-gray-700/30 px-2 sm:px-4 py-3 sm:py-4 relative z-10">
