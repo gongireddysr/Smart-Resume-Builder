@@ -1,6 +1,3 @@
-import type { ParsedJobDescription } from './parsedJobDescription'
-import type { ParsedResume } from './parsedResume'
-
 export type RelevanceLevel = 'low' | 'medium' | 'high'
 
 export type SeniorityAlignment = 'underqualified' | 'aligned' | 'overqualified' | 'unclear'
@@ -42,9 +39,4 @@ export interface ResumeJdMatch {
   /** Actionable hints for Layer 6 generation — do not rewrite resume here */
   tailoring_hints: string[]
   warnings: string[]
-}
-
-export interface MatchResumeJdRequest {
-  parsedResume: ParsedResume
-  parsedJobDescription: ParsedJobDescription
 }

@@ -123,9 +123,5 @@ ${preferenceBlock}`
   return {
     system_prompt,
     user_prompt,
-    metadata: {
-      job_title: input.parsedJobDescription.job_title,
-      relevance_level: input.match.relevance_estimate.level,
-    },
   }
 }

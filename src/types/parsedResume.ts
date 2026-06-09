@@ -23,7 +23,3 @@ export interface ParsedResume {
   sections_found: string[]
   warnings: string[]
 }
-
-export interface ParseResumeRequest {
-  resumeText: string
-}
