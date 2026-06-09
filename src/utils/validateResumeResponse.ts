@@ -34,7 +34,7 @@ function normalizeExperience(value: unknown): ResumeExperience[] {
 }
 
 /** Coerce common OpenAI shape issues (null contact fields, missing arrays) before validation */
-export function normalizeResumeModificationResponse(data: unknown): ResumeModificationResponse {
+function normalizeResumeModificationResponse(data: unknown): ResumeModificationResponse {
   const record =
     data && typeof data === 'object' ? (data as Record<string, unknown>) : {}
 

@@ -16,8 +16,4 @@ export interface AssembleGenerationPromptInput {
 export interface AssembledGenerationPrompt {
   system_prompt: string
   user_prompt: string
-  metadata: {
-    job_title: string | null
-    relevance_level: ResumeJdMatch['relevance_estimate']['level']
-  }
 }

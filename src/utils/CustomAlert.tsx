@@ -36,8 +36,19 @@ function CustomAlert({
       onKeyDown={handleKeyDown}
       tabIndex={-1}
     >
-      <div className="bg-black/20 backdrop-blur-md border border-red-500/50 rounded-lg p-6 max-w-md mx-4 shadow-2xl animate-fade-in">
-        <div className="flex items-start gap-4">
+      <div className="relative bg-black/20 backdrop-blur-md border border-red-500/50 rounded-lg p-6 pt-8 max-w-md mx-4 shadow-2xl animate-fade-in">
+        <button
+          type="button"
+          onClick={onClose}
+          className="absolute right-3 top-3 rounded-md p-1.5 text-gray-300 transition-colors hover:bg-white/10 hover:text-white"
+          aria-label="Close alert"
+        >
+          <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+          </svg>
+        </button>
+
+        <div className="flex items-start gap-4 pr-6">
           <div className="flex-shrink-0">
             <svg
               className="w-6 h-6 text-red-400"
@@ -69,20 +80,11 @@ function CustomAlert({
               {message}
             </p>
           </div>
-
-          <button
-            onClick={onClose}
-            className="flex-shrink-0 text-gray-400 hover:text-white transition-colors"
-            aria-label="Close alert"
-          >
-            <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
-            </svg>
-          </button>
         </div>
 
         <div className="mt-4 flex justify-end">
           <button
+            type="button"
             onClick={onClose}
             className="px-4 py-2 bg-red-600/80 backdrop-blur-sm hover:bg-red-700/80 text-white rounded-md font-medium border border-red-500/30 transition-all duration-200 poppins-font"
           >

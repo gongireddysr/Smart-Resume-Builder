@@ -1,0 +1,54 @@
+@import "@fontsource/outfit/400.css";
+@import "@fontsource/outfit/500.css";
+@import "@fontsource/outfit/600.css";
+@import "@fontsource/outfit/700.css";
+
+.app-page {
+  font-family: "Outfit", ui-sans-serif, system-ui, sans-serif;
+  color: #0f172a;
+  background-color: #ffffff;
+  -webkit-font-smoothing: antialiased;
+}
+
+.app-textarea {
+  width: 100%;
+  border-radius: 0.5rem;
+  border: 1px solid #e2e8f0;
+  background-color: #ffffff;
+  padding: 0.625rem 0.75rem;
+  font-size: 0.875rem;
+  line-height: 1.625;
+  color: #1e293b;
+}
+
+.app-textarea::placeholder {
+  color: #94a3b8;
+}
+
+.app-textarea:focus {
+  border-color: #14b8a6;
+  outline: none;
+  box-shadow: 0 0 0 2px rgb(20 184 166 / 0.2);
+}
+
+.app-select {
+  width: 100%;
+  border-radius: 0.5rem;
+  border: 1px solid #e2e8f0;
+  background-color: #ffffff;
+  padding: 0.5rem 0.75rem;
+  font-size: 0.875rem;
+  color: #1e293b;
+}
+
+.app-select:focus {
+  border-color: #14b8a6;
+  outline: none;
+  box-shadow: 0 0 0 2px rgb(20 184 166 / 0.2);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .animate-spin {
+    animation: none;
+  }
+}

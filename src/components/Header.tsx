@@ -15,7 +15,7 @@ function Header({ variant = 'full' }: HeaderProps) {
   if (variant === 'compact') {
     return (
       <header className="bg-transparent shadow-sm border-b border-gray-700/30 flex-shrink-0 relative z-10">
-        <div className="px-4 sm:px-6 py-3 sm:py-4 flex flex-col sm:flex-row items-center justify-between gap-3 sm:gap-0">
+        <div className="px-4 sm:px-6 py-3 sm:py-4 flex items-center justify-center sm:justify-start">
           <div className="flex items-center gap-2 sm:gap-4">
             <img
               src="/srm-logo.png"
@@ -26,10 +26,6 @@ function Header({ variant = 'full' }: HeaderProps) {
             <h1 className="text-lg sm:text-xl lg:text-2xl font-bold text-green-400 poppins-font text-center">
               Smart Resume Modifier
             </h1>
-          </div>
-          <div className="hidden sm:flex gap-3">
-            <div className="px-4 py-2 bg-gray-700 rounded-md w-24 h-10 animate-pulse" />
-            <div className="px-4 py-2 bg-gray-700 rounded-md w-28 h-10 animate-pulse" />
           </div>
         </div>
       </header>

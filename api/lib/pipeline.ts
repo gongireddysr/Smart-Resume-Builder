@@ -41,7 +41,7 @@ async function chatJson(
   return JSON.parse(raw) as unknown;
 }
 
-export async function parseResumeLayer(
+async function parseResumeLayer(
   openai: OpenAI,
   resumeText: string
 ): Promise<ParsedResume> {
@@ -57,7 +57,7 @@ export async function parseResumeLayer(
   return parsed;
 }
 
-export async function parseJobDescriptionLayer(
+async function parseJobDescriptionLayer(
   openai: OpenAI,
   jobDescription: string
 ): Promise<ParsedJobDescription> {
@@ -73,7 +73,7 @@ export async function parseJobDescriptionLayer(
   return parsed;
 }
 
-export async function matchResumeJdLayer(
+async function matchResumeJdLayer(
   openai: OpenAI,
   parsedResume: ParsedResume,
   parsedJobDescription: ParsedJobDescription
@@ -89,7 +89,7 @@ export async function matchResumeJdLayer(
   return parsed;
 }
 
-export async function generateResumeLayer(
+async function generateResumeLayer(
   openai: OpenAI,
   systemPrompt: string,
   userPrompt: string

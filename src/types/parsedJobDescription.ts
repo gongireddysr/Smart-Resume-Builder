@@ -16,7 +16,3 @@ export interface ParsedJobDescription {
   sections_found: string[]
   warnings: string[]
 }
-
-export interface ParseJobDescriptionRequest {
-  jobDescription: string
-}
