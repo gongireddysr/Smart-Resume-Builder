@@ -23,7 +23,7 @@ const steps: Step[] = [
   {
     number: "02",
     title: "Upload your resume",
-    description: "Add your .docx file. The tool reads your experience and skills.",
+    description: "Add your .docx or .pdf file. The tool reads your experience and skills.",
     icon: FileDoc,
   },
   {
