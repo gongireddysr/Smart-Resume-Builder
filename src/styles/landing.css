@@ -1,22 +1,14 @@
+@import "./tokens.css";
+@import "./brand.css";
 @import "@fontsource/outfit/400.css";
 @import "@fontsource/outfit/500.css";
 @import "@fontsource/outfit/600.css";
 @import "@fontsource/outfit/700.css";
 
 .landing-page {
-  --landing-bg: #ffffff;
-  --landing-surface: #f8fafc;
-  --landing-border: #e2e8f0;
-  --landing-text: #0f172a;
-  --landing-text-secondary: #475569;
-  --landing-text-muted: #64748b;
-  --landing-accent: #0d9488;
-  --landing-accent-hover: #0f766e;
-  --landing-accent-soft: #ccfbf1;
-
   font-family: "Outfit", ui-sans-serif, system-ui, sans-serif;
-  color: var(--landing-text);
-  background-color: var(--landing-bg);
+  color: var(--brand-ink);
+  background-color: var(--brand-bg);
   -webkit-font-smoothing: antialiased;
 }
 

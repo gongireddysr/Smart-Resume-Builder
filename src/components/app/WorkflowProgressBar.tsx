@@ -20,7 +20,7 @@ interface Step {
 function StepIndicator({ state }: { state: StepState }) {
   if (state === "completed") {
     return (
-      <span className="inline-flex h-8 w-8 items-center justify-center rounded-full bg-teal-600 text-white">
+      <span className="inline-flex h-9 w-9 items-center justify-center rounded-full bg-[var(--brand-primary)] text-white shadow-sm ring-2 ring-[var(--brand-primary-soft)]">
         <Check size={16} weight="bold" aria-hidden="true" />
       </span>
     );
@@ -28,15 +28,18 @@ function StepIndicator({ state }: { state: StepState }) {
 
   if (state === "active") {
     return (
-      <span className="inline-flex h-8 w-8 items-center justify-center rounded-full border-2 border-teal-600 bg-teal-50">
-        <span className="h-2.5 w-2.5 rounded-full bg-teal-600" aria-hidden="true" />
+      <span className="inline-flex h-9 w-9 items-center justify-center rounded-full border-2 border-[var(--brand-primary)] bg-[var(--brand-primary-soft)] shadow-sm">
+        <span
+          className="h-2.5 w-2.5 rounded-full bg-[var(--brand-primary)]"
+          aria-hidden="true"
+        />
       </span>
     );
   }
 
   return (
-    <span className="inline-flex h-8 w-8 items-center justify-center rounded-full border border-slate-300 bg-white">
-      <span className="h-2 w-2 rounded-full bg-slate-300" aria-hidden="true" />
+    <span className="inline-flex h-9 w-9 items-center justify-center rounded-full border border-[var(--brand-border-strong)] bg-[var(--brand-surface)]">
+      <span className="h-2 w-2 rounded-full bg-[var(--brand-border)]" aria-hidden="true" />
     </span>
   );
 }
@@ -83,10 +86,7 @@ function WorkflowProgressBar({
     phase === "results" ? "results" : phase === "generating" ? "results" : "details";
 
   return (
-    <nav
-      aria-label="Application progress"
-      className="border-b border-slate-200 bg-slate-50"
-    >
+    <nav aria-label="Application progress" className="brand-progress">
       <div className="mx-auto max-w-7xl px-4 py-4 sm:px-6 lg:px-8">
         <ol className="flex items-center justify-between gap-2 sm:justify-center sm:gap-0">
           {steps.map((step, index) => {
@@ -105,22 +105,22 @@ function WorkflowProgressBar({
                     <p
                       className={`truncate text-xs font-semibold sm:text-sm ${
                         step.state === "upcoming"
-                          ? "text-slate-400"
+                          ? "text-[var(--brand-muted)]"
                           : step.state === "active"
-                            ? "text-teal-700"
-                            : "text-slate-700"
+                            ? "text-[var(--brand-primary)]"
+                            : "text-[var(--brand-ink)]"
                       }`}
                     >
                       <span className="sm:hidden">{step.shortLabel}</span>
                       <span className="hidden sm:inline">{step.label}</span>
                     </p>
                     {step.sublabel && (
-                      <p className="hidden text-xs text-teal-700 sm:block">
+                      <p className="hidden text-xs font-medium text-[var(--brand-primary)] sm:block">
                         {step.sublabel}
                       </p>
                     )}
                     {phase === "results" && step.id === "results" && (
-                      <p className="hidden text-xs text-teal-700 sm:block">
+                      <p className="hidden text-xs font-medium text-[var(--brand-primary)] sm:block">
                         Resume ready
                       </p>
                     )}
@@ -130,8 +130,10 @@ function WorkflowProgressBar({
                 {!isLast && (
                   <div
                     aria-hidden="true"
-                    className={`mx-2 hidden h-px flex-1 sm:mx-6 sm:block sm:w-24 sm:flex-none lg:w-32 ${
-                      connectorComplete ? "bg-teal-300" : "bg-slate-200"
+                    className={`mx-2 hidden h-0.5 flex-1 sm:mx-6 sm:block sm:w-24 sm:flex-none lg:w-32 ${
+                      connectorComplete
+                        ? "bg-[var(--brand-primary)]"
+                        : "bg-[var(--brand-border)]"
                     }`}
                   />
                 )}

@@ -156,8 +156,7 @@ function RightPanel({
     }
   }
 
-  const secondaryButtonClass =
-    'rounded-lg border border-slate-200 bg-white px-3 py-1.5 text-xs font-medium text-slate-600 transition-colors hover:border-slate-300 hover:bg-slate-50 sm:text-sm'
+  const secondaryButtonClass = 'brand-action-btn inline-flex items-center gap-1.5'
 
   return (
     <AppCard
@@ -167,13 +166,13 @@ function RightPanel({
       status={
         uploadedFile ? (
           <div className="flex flex-wrap items-center gap-2">
-            <span className="inline-flex items-center gap-1.5 rounded-full bg-teal-50 px-2.5 py-1 text-xs font-medium text-teal-800">
+            <span className="brand-badge brand-badge-success">
               <CheckCircle size={14} weight="fill" aria-hidden="true" />
               Uploaded
             </span>
-            <span className="truncate text-xs text-slate-500">{uploadedFile.name}</span>
+            <span className="truncate text-xs text-[var(--brand-muted)]">{uploadedFile.name}</span>
             {resumeText.trim().length > 0 && (
-              <span className="text-xs text-slate-500">
+              <span className="text-xs text-[var(--brand-muted)]">
                 {resumeText.trim().length.toLocaleString()} characters extracted
               </span>
             )}
@@ -232,15 +231,15 @@ function RightPanel({
 
       {isFileLoading ? (
         <div
-          className="flex flex-1 flex-col items-center justify-center rounded-xl border border-dashed border-slate-200 bg-slate-50 px-6 py-12 text-center"
+          className="brand-panel-muted flex flex-1 flex-col items-center justify-center px-6 py-12 text-center"
           aria-live="polite"
         >
           <SpinnerGap
             size={36}
-            className="animate-spin text-teal-600"
+            className="animate-spin text-[var(--brand-primary)]"
             aria-hidden="true"
           />
-          <p className="mt-4 text-sm font-medium text-slate-700">Reading document...</p>
+          <p className="mt-4 text-sm font-medium text-[var(--brand-ink)]">Reading document...</p>
         </div>
       ) : showEditor ? (
         <div className="flex min-h-0 flex-1 flex-col gap-3">
@@ -250,7 +249,7 @@ function RightPanel({
               resume text below.
             </InlineAlert>
           )}
-          <label htmlFor="resume-text" className="text-sm font-medium text-slate-700">
+          <label htmlFor="resume-text" className="text-sm font-medium text-[var(--brand-ink-secondary)]">
             Review extracted text
           </label>
           <textarea
@@ -260,7 +259,7 @@ function RightPanel({
             className="app-textarea min-h-[220px] flex-1 resize-none lg:min-h-[300px]"
           />
           {hasChanges && (
-            <p className="text-xs text-slate-500">You edited the extracted text.</p>
+            <p className="text-xs text-[var(--brand-muted)]">You edited the extracted text.</p>
           )}
         </div>
       ) : (
@@ -268,27 +267,25 @@ function RightPanel({
           onDragOver={handleDragOver}
           onDragLeave={handleDragLeave}
           onDrop={handleDrop}
-          className={`flex flex-1 flex-col items-center justify-center rounded-xl border-2 border-dashed px-6 py-12 text-center transition-colors ${
-            isDragOver
-              ? 'border-teal-500 bg-teal-50'
-              : 'border-slate-200 bg-slate-50 hover:border-teal-300 hover:bg-teal-50/40'
+          className={`flex flex-1 flex-col items-center justify-center brand-dropzone px-6 py-12 text-center ${
+            isDragOver ? 'brand-dropzone-active' : ''
           }`}
         >
-          <span className="inline-flex rounded-full bg-white p-3 text-slate-400 shadow-sm">
+          <span className="inline-flex rounded-full bg-[var(--brand-surface)] p-3 text-[var(--brand-muted)] shadow-sm ring-1 ring-[var(--brand-border)]">
             <UploadSimple size={28} aria-hidden="true" />
           </span>
-          <p className="mt-4 text-sm font-medium text-slate-700">
+          <p className="mt-4 text-sm font-semibold text-[var(--brand-ink)]">
             Drag and drop your resume here
           </p>
-          <p className="mt-1 text-sm text-slate-500">or</p>
+          <p className="mt-1 text-sm text-[var(--brand-muted)]">or</p>
           <button
             type="button"
             onClick={() => fileInputRef.current?.click()}
-            className="mt-4 rounded-lg bg-teal-600 px-4 py-2 text-sm font-semibold text-white transition-colors hover:bg-teal-700"
+            className="brand-btn brand-btn-primary mt-4 px-4 py-2"
           >
             Choose .docx file
           </button>
-          <p className="mt-4 text-xs text-slate-500">Microsoft Word .docx files only</p>
+          <p className="mt-4 text-xs text-[var(--brand-muted)]">Microsoft Word .docx files only</p>
         </div>
       )}
     </AppCard>

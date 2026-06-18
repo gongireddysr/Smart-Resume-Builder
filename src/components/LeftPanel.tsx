@@ -24,7 +24,7 @@ function LeftPanel({ jobDescription, onJobDescriptionChange }: LeftPanelProps) {
       description="Paste the full posting including requirements and responsibilities."
       icon={<ClipboardText size={20} weight="duotone" aria-hidden="true" />}
       status={
-        <p className="text-xs text-slate-500">
+        <p className="text-xs text-[var(--brand-muted)]">
           {charCount.toLocaleString()} {charCount === 1 ? "character" : "characters"}
         </p>
       }
@@ -33,7 +33,7 @@ function LeftPanel({ jobDescription, onJobDescriptionChange }: LeftPanelProps) {
           <button
             type="button"
             onClick={handleClearJobDescription}
-            className="rounded-lg border border-slate-200 bg-white px-3 py-1.5 text-xs font-medium text-slate-600 transition-colors hover:border-slate-300 hover:bg-slate-50 sm:text-sm"
+            className="brand-action-btn"
           >
             Clear
           </button>
@@ -41,7 +41,7 @@ function LeftPanel({ jobDescription, onJobDescriptionChange }: LeftPanelProps) {
       }
       footer={
         isEmpty ? (
-          <p className="text-xs text-slate-500">
+          <p className="text-xs text-[var(--brand-muted)]">
             Copy the listing from a job board, company careers page, or recruiter email.
           </p>
         ) : undefined

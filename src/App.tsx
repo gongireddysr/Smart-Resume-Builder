@@ -209,10 +209,8 @@ function App() {
 
       <main className="mx-auto flex w-full max-w-7xl flex-1 flex-col gap-6 px-4 py-6 sm:px-6 lg:px-8 lg:py-8">
         <div className="max-w-3xl">
-          <h1 className="text-2xl font-bold tracking-tight text-slate-900 sm:text-3xl">
-            Tailor your resume
-          </h1>
-          <p className="mt-2 text-base leading-relaxed text-slate-600">
+          <h1 className="brand-heading text-2xl sm:text-3xl">Tailor your resume</h1>
+          <p className="brand-lead mt-2 text-base">
             Paste the job description and upload your resume, then configure options
             and generate an ATS-friendly version.
           </p>
@@ -240,7 +238,7 @@ function App() {
         />
       </main>
 
-      <div className="sticky bottom-0 border-t border-slate-200 bg-white/95 backdrop-blur-sm">
+      <div className="brand-footer-bar sticky bottom-0">
         <div className="mx-auto flex max-w-7xl flex-col gap-3 px-4 py-4 sm:px-6 lg:px-8">
           {inlineValidationMessage && (
             <InlineAlert

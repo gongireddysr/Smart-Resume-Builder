@@ -7,13 +7,13 @@ interface FinalCtaSectionProps {
 
 function FinalCtaSection({ onTryDemo }: FinalCtaSectionProps) {
   return (
-    <section className="bg-white py-16 sm:py-20">
+    <section className="brand-section py-16 sm:py-20">
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-        <div className="rounded-2xl border border-slate-200 bg-slate-50 px-6 py-12 text-center sm:px-12 sm:py-16">
-          <h2 className="text-3xl font-bold tracking-tight text-slate-900 sm:text-4xl">
+        <div className="brand-panel-muted rounded-2xl px-6 py-12 text-center shadow-[var(--brand-shadow)] sm:px-12 sm:py-16">
+          <h2 className="brand-heading text-3xl sm:text-4xl">
             Ready to optimize your next application?
           </h2>
-          <p className="mx-auto mt-4 max-w-2xl text-lg leading-relaxed text-slate-600">
+          <p className="brand-lead mx-auto mt-4 max-w-2xl text-lg">
             Try the demo with a real job posting and your own resume.
           </p>
           <div className="mt-8 flex justify-center">
