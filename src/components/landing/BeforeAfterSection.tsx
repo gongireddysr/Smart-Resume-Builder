@@ -10,16 +10,13 @@ function BeforeAfterSection() {
   const [activeTab, setActiveTab] = useState<"before" | "after">("before");
 
   return (
-    <section
-      id="example"
-      className="border-b border-slate-200 bg-slate-50 py-16 sm:py-20"
-    >
+    <section id="example" className="brand-section-alt py-16 sm:py-20">
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
         <div className="max-w-2xl">
-          <h2 className="text-3xl font-bold tracking-tight text-slate-900 sm:text-4xl">
+          <h2 className="brand-heading text-3xl sm:text-4xl">
             Example resume improvement
           </h2>
-          <p className="mt-4 text-lg leading-relaxed text-slate-600">
+          <p className="brand-lead mt-4 text-lg">
             Illustrative before and after for one experience bullet. Your results
             will reflect your resume and the job posting you provide.
           </p>
@@ -27,7 +24,7 @@ function BeforeAfterSection() {
 
         <div className="mt-10 sm:hidden">
           <div
-            className="inline-flex rounded-lg border border-slate-200 bg-white p-1"
+            className="inline-flex rounded-lg border border-[var(--brand-border)] bg-[var(--brand-surface)] p-1 shadow-sm"
             role="tablist"
             aria-label="Before and after example"
           >
@@ -35,10 +32,10 @@ function BeforeAfterSection() {
               type="button"
               role="tab"
               aria-selected={activeTab === "before"}
-              className={`rounded-md px-4 py-2 text-sm font-medium transition-colors ${
+              className={`rounded-md px-4 py-2 text-sm font-semibold transition-colors ${
                 activeTab === "before"
-                  ? "bg-slate-900 text-white"
-                  : "text-slate-600 hover:text-slate-900"
+                  ? "bg-[var(--brand-header)] text-white shadow-sm"
+                  : "text-[var(--brand-ink-secondary)] hover:text-[var(--brand-ink)]"
               }`}
               onClick={() => setActiveTab("before")}
             >
@@ -48,10 +45,10 @@ function BeforeAfterSection() {
               type="button"
               role="tab"
               aria-selected={activeTab === "after"}
-              className={`rounded-md px-4 py-2 text-sm font-medium transition-colors ${
+              className={`rounded-md px-4 py-2 text-sm font-semibold transition-colors ${
                 activeTab === "after"
-                  ? "bg-teal-600 text-white"
-                  : "text-slate-600 hover:text-slate-900"
+                  ? "bg-[var(--brand-primary)] text-white shadow-sm"
+                  : "text-[var(--brand-ink-secondary)] hover:text-[var(--brand-ink)]"
               }`}
               onClick={() => setActiveTab("after")}
             >
@@ -59,31 +56,31 @@ function BeforeAfterSection() {
             </button>
           </div>
 
-          <div className="mt-4 rounded-xl border border-slate-200 bg-white p-6">
-            <p className="text-xs font-semibold uppercase tracking-wide text-slate-400">
+          <div className="brand-card mt-4 p-6">
+            <p className="text-xs font-semibold uppercase tracking-wide text-[var(--brand-muted)]">
               Experience bullet
             </p>
-            <p className="mt-3 text-base leading-relaxed text-slate-700">
+            <p className="mt-3 text-base leading-relaxed text-[var(--brand-ink-secondary)]">
               {activeTab === "before" ? beforeBullet : afterBullet}
             </p>
           </div>
         </div>
 
         <div className="mt-10 hidden gap-6 sm:grid sm:grid-cols-2">
-          <article className="rounded-xl border border-slate-200 bg-white p-6">
-            <p className="text-xs font-semibold uppercase tracking-wide text-slate-400">
+          <article className="brand-card p-6">
+            <p className="text-xs font-semibold uppercase tracking-wide text-[var(--brand-muted)]">
               Before
             </p>
-            <p className="mt-4 text-base leading-relaxed text-slate-700">
+            <p className="mt-4 text-base leading-relaxed text-[var(--brand-ink-secondary)]">
               {beforeBullet}
             </p>
           </article>
 
-          <article className="rounded-xl border border-teal-200 bg-white p-6 ring-1 ring-teal-100">
-            <p className="text-xs font-semibold uppercase tracking-wide text-teal-700">
+          <article className="brand-card border-[var(--brand-primary)] p-6 ring-2 ring-[var(--brand-primary-soft)]">
+            <p className="text-xs font-semibold uppercase tracking-wide text-[var(--brand-primary)]">
               After
             </p>
-            <p className="mt-4 text-base leading-relaxed text-slate-700">
+            <p className="mt-4 text-base leading-relaxed text-[var(--brand-ink-secondary)]">
               {afterBullet}
             </p>
           </article>

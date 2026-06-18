@@ -15,17 +15,19 @@ const variantStyles: Record<
   { container: string; icon: typeof Info; iconClass: string }
 > = {
   info: {
-    container: "border-slate-200 bg-slate-50 text-slate-700",
+    container:
+      "border-[var(--brand-border-strong)] bg-[var(--brand-surface-warm)] text-[var(--brand-ink-secondary)]",
     icon: Info,
-    iconClass: "text-slate-500",
+    iconClass: "text-[var(--brand-muted)]",
   },
   warning: {
-    container: "border-amber-200 bg-amber-50 text-amber-900",
+    container:
+      "border-[var(--brand-primary)]/25 bg-[var(--brand-primary-soft)] text-[var(--brand-primary-hover)]",
     icon: Warning,
-    iconClass: "text-amber-600",
+    iconClass: "text-[var(--brand-primary)]",
   },
   error: {
-    container: "border-red-200 bg-red-50 text-red-900",
+    container: "border-red-300 bg-red-50 text-red-900",
     icon: WarningCircle,
     iconClass: "text-red-600",
   },
@@ -38,13 +40,13 @@ function InlineAlert({ variant = "info", title, children, onDismiss }: InlineAle
   return (
     <div
       role="alert"
-      className={`relative flex gap-3 rounded-lg border px-4 py-3 pr-10 text-sm leading-relaxed ${styles.container}`}
+      className={`relative flex gap-3 rounded-lg border px-4 py-3 pr-10 text-sm leading-relaxed shadow-sm ${styles.container}`}
     >
       {onDismiss && (
         <button
           type="button"
           onClick={onDismiss}
-          className="absolute right-2 top-2 rounded-md p-1 text-slate-500 transition-colors hover:bg-black/5 hover:text-slate-700"
+          className="absolute right-2 top-2 rounded-md p-1 text-[var(--brand-muted)] transition-colors hover:bg-black/5 hover:text-[var(--brand-ink)]"
           aria-label="Dismiss alert"
         >
           <X size={16} weight="bold" aria-hidden="true" />

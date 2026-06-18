@@ -7,16 +7,14 @@ interface HeroSectionProps {
 
 function HeroSection({ onTryDemo }: HeroSectionProps) {
   return (
-    <section className="border-b border-slate-200 bg-white">
+    <section className="brand-section">
       <div className="mx-auto grid max-w-7xl gap-12 px-4 py-16 sm:px-6 lg:grid-cols-2 lg:items-center lg:gap-16 lg:px-8 lg:py-24">
         <div className="landing-reveal">
-          <p className="mb-4 text-sm font-semibold uppercase tracking-wide text-teal-700">
-            ATS Resume Optimizer
-          </p>
-          <h1 className="text-4xl font-bold tracking-tight text-slate-900 sm:text-5xl lg:leading-[1.1]">
+          <p className="brand-eyebrow mb-4">ATS Resume Optimizer</p>
+          <h1 className="brand-heading text-4xl sm:text-5xl lg:leading-[1.1]">
             Tailor your resume to every job posting
           </h1>
-          <p className="mt-5 max-w-xl text-lg leading-relaxed text-slate-600">
+          <p className="brand-lead mt-5 max-w-xl text-lg">
             Paste a job description, upload your resume, and get an ATS-friendly
             version matched to the role.
           </p>
@@ -31,43 +29,41 @@ function HeroSection({ onTryDemo }: HeroSectionProps) {
             </LandingButton>
           </div>
 
-          <p className="mt-6 max-w-lg text-sm leading-relaxed text-slate-500">
+          <p className="mt-6 max-w-lg text-sm leading-relaxed text-[var(--brand-muted)]">
             Built for active job seekers who want stronger applications, not
             generic templates.
           </p>
         </div>
 
         <div className="landing-reveal lg:justify-self-end">
-          <div className="rounded-2xl border border-slate-200 bg-slate-50 p-6 shadow-sm">
+          <div className="brand-panel-muted p-6 shadow-[var(--brand-shadow)]">
             <div className="mb-4 flex items-center justify-between">
-              <span className="text-xs font-semibold uppercase tracking-wide text-slate-500">
+              <span className="text-xs font-semibold uppercase tracking-wide text-[var(--brand-muted)]">
                 Resume preview
               </span>
-              <span className="rounded-full bg-teal-50 px-2.5 py-1 text-xs font-medium text-teal-700">
-                Keyword aligned
-              </span>
+              <span className="brand-badge brand-badge-success">Keyword aligned</span>
             </div>
 
-            <div className="rounded-xl border border-slate-200 bg-white p-5 shadow-sm">
-              <p className="text-base font-semibold text-slate-900">
+            <div className="brand-card p-5">
+              <p className="text-base font-semibold text-[var(--brand-ink)]">
                 Alex Morgan
               </p>
-              <p className="mt-1 text-sm text-slate-500">
+              <p className="mt-1 text-sm text-[var(--brand-muted)]">
                 Product Manager · San Francisco, CA
               </p>
 
-              <div className="mt-5 border-t border-slate-100 pt-4">
-                <p className="text-xs font-semibold uppercase tracking-wide text-slate-400">
+              <div className="mt-5 border-t border-[var(--brand-border)] pt-4">
+                <p className="text-xs font-semibold uppercase tracking-wide text-[var(--brand-muted)]">
                   Professional summary
                 </p>
-                <p className="mt-2 text-sm leading-relaxed text-slate-600">
+                <p className="mt-2 text-sm leading-relaxed text-[var(--brand-ink-secondary)]">
                   Product leader with 6 years driving roadmap execution,
                   cross-functional delivery, and measurable growth outcomes.
                 </p>
               </div>
 
-              <div className="mt-4 border-t border-slate-100 pt-4">
-                <p className="text-xs font-semibold uppercase tracking-wide text-slate-400">
+              <div className="mt-4 border-t border-[var(--brand-border)] pt-4">
+                <p className="text-xs font-semibold uppercase tracking-wide text-[var(--brand-muted)]">
                   Matched keywords
                 </p>
                 <div className="mt-2 flex flex-wrap gap-2">
@@ -75,7 +71,7 @@ function HeroSection({ onTryDemo }: HeroSectionProps) {
                     (keyword) => (
                       <span
                         key={keyword}
-                        className="inline-flex items-center gap-1 rounded-md bg-teal-50 px-2 py-1 text-xs font-medium text-teal-800"
+                        className="brand-badge brand-badge-success inline-flex items-center gap-1 rounded-md"
                       >
                         <CheckCircle size={12} weight="fill" aria-hidden="true" />
                         {keyword}

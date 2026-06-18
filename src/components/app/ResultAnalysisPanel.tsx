@@ -14,8 +14,8 @@ function AnalysisSection({
   children: ReactNode;
 }) {
   return (
-    <section className="border-b border-slate-200 pb-5 last:border-b-0 last:pb-0">
-      <h3 className="text-sm font-semibold text-slate-900">{title}</h3>
+    <section className="border-b border-[var(--brand-border)] pb-5 last:border-b-0 last:pb-0">
+      <h3 className="text-sm font-semibold text-[var(--brand-ink)]">{title}</h3>
       <div className="mt-3">{children}</div>
     </section>
   );
@@ -45,9 +45,9 @@ function ResultAnalysisPanel({ result }: ResultAnalysisPanelProps) {
             {result.change_summary.map((change, index) => (
               <li
                 key={index}
-                className="flex items-start gap-2 text-sm leading-relaxed text-slate-600"
+                className="flex items-start gap-2 text-sm leading-relaxed text-[var(--brand-ink-secondary)]"
               >
-                <span className="mt-2 h-1.5 w-1.5 flex-shrink-0 rounded-full bg-teal-600" />
+                <span className="mt-2 h-1.5 w-1.5 flex-shrink-0 rounded-full bg-[var(--brand-primary)]" />
                 {change}
               </li>
             ))}
@@ -59,14 +59,14 @@ function ResultAnalysisPanel({ result }: ResultAnalysisPanelProps) {
         <AnalysisSection title="Skills optimization">
           {result.skills_added?.length > 0 && (
             <div className="mb-3">
-              <p className="mb-2 text-xs font-medium uppercase tracking-wide text-slate-500">
+              <p className="mb-2 text-xs font-semibold uppercase tracking-wide text-[var(--brand-muted)]">
                 Added
               </p>
               <div className="flex flex-wrap gap-2">
                 {result.skills_added.map((skill) => (
                   <span
                     key={skill}
-                    className="rounded-md border border-teal-200 bg-teal-50 px-2 py-1 text-xs font-medium text-teal-800"
+                    className="brand-badge brand-badge-success rounded-md"
                   >
                     +{skill}
                   </span>
@@ -76,14 +76,14 @@ function ResultAnalysisPanel({ result }: ResultAnalysisPanelProps) {
           )}
           {result.skills_boosted?.length > 0 && (
             <div className="mb-3">
-              <p className="mb-2 text-xs font-medium uppercase tracking-wide text-slate-500">
+              <p className="mb-2 text-xs font-semibold uppercase tracking-wide text-[var(--brand-muted)]">
                 Emphasized
               </p>
               <div className="flex flex-wrap gap-2">
                 {result.skills_boosted.map((skill) => (
                   <span
                     key={skill}
-                    className="rounded-md border border-slate-200 bg-slate-100 px-2 py-1 text-xs font-medium text-slate-700"
+                    className="brand-badge brand-badge-neutral rounded-md"
                   >
                     {skill}
                   </span>
@@ -93,7 +93,7 @@ function ResultAnalysisPanel({ result }: ResultAnalysisPanelProps) {
           )}
           {result.skills_removed?.length > 0 && (
             <div>
-              <p className="mb-2 text-xs font-medium uppercase tracking-wide text-slate-500">
+              <p className="mb-2 text-xs font-semibold uppercase tracking-wide text-[var(--brand-muted)]">
                 Removed
               </p>
               <div className="flex flex-wrap gap-2">
@@ -117,9 +117,9 @@ function ResultAnalysisPanel({ result }: ResultAnalysisPanelProps) {
             {result.experience_transformed.map((role, index) => (
               <li
                 key={index}
-                className="flex items-start gap-2 text-sm leading-relaxed text-slate-600"
+                className="flex items-start gap-2 text-sm leading-relaxed text-[var(--brand-ink-secondary)]"
               >
-                <span className="mt-2 h-1.5 w-1.5 flex-shrink-0 rounded-full bg-slate-400" />
+                <span className="mt-2 h-1.5 w-1.5 flex-shrink-0 rounded-full bg-[var(--brand-border-strong)]" />
                 {role}
               </li>
             ))}
@@ -133,9 +133,9 @@ function ResultAnalysisPanel({ result }: ResultAnalysisPanelProps) {
             {result.suggestions.map((suggestion, index) => (
               <li
                 key={index}
-                className="flex items-start gap-2 text-sm leading-relaxed text-slate-600"
+                className="flex items-start gap-2 text-sm leading-relaxed text-[var(--brand-ink-secondary)]"
               >
-                <span className="mt-2 h-1.5 w-1.5 flex-shrink-0 rounded-full bg-slate-400" />
+                <span className="mt-2 h-1.5 w-1.5 flex-shrink-0 rounded-full bg-[var(--brand-border-strong)]" />
                 {suggestion}
               </li>
             ))}
