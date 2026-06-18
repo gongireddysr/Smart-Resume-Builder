@@ -92,13 +92,30 @@ async function matchResumeJdLayer(
 async function generateResumeLayer(
   openai: OpenAI,
   systemPrompt: string,
-  userPrompt: string
+  userPrompt: string,
+  parsedResume: ParsedResume,
+  parsedJobDescription: ParsedJobDescription
 ): Promise<ResumeModificationResponse> {
   const parsed = await chatJson(openai, systemPrompt, userPrompt, {
     temperature: 0.3,
     max_tokens: 4000,
   });
-  return parseResumeModificationResponse(parsed);
+  const result = parseResumeModificationResponse(parsed);
+
+  return {
+    ...result,
+    job_title_from_jd:
+      result.job_title_from_jd === 'Position'
+        ? parsedJobDescription.job_title ?? 'Position'
+        : result.job_title_from_jd,
+    full_name: result.full_name || parsedResume.full_name || '',
+    email: result.email || parsedResume.email || '',
+    phone: result.phone || parsedResume.phone || '',
+    location: result.location || parsedResume.location || '',
+    urls:
+      result.urls ||
+      (parsedResume.urls.length > 0 ? parsedResume.urls.join(', ') : ''),
+  };
 }
 
 /**
@@ -128,5 +145,11 @@ export async function runResumeModificationPipeline(
     jobDescription,
   });
 
-  return generateResumeLayer(openai, system_prompt, user_prompt);
+  return generateResumeLayer(
+    openai,
+    system_prompt,
+    user_prompt,
+    parsedResume,
+    parsedJobDescription
+  );
 }
