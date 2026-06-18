@@ -1,9 +1,13 @@
 import posthog from 'posthog-js'
-import AnimatedStars from '../utils/AnimatedStars'
-import Header from './Header'
+import { ArrowLeft, DownloadSimple, FileText } from '@phosphor-icons/react'
+import ApplicationHeader from './app/ApplicationHeader'
+import WorkflowProgressBar from './app/WorkflowProgressBar'
+import ResultAnalysisPanel from './app/ResultAnalysisPanel'
+import LandingButton from './landing/LandingButton'
 import Template from './Template'
 import { generateDocx } from '../utils/docxGenerator'
 import type { ResumeModificationResponse } from '../types/resume'
+import '../styles/product.css'
 
 interface ResultProps {
   modificationResult: ResumeModificationResponse
@@ -12,8 +16,6 @@ interface ResultProps {
 }
 
 function Result({ modificationResult, onBackToEdit, onShowAlert }: ResultProps) {
-  
-  // Use the structured data directly from API response
   const templateData = {
     full_name: modificationResult.full_name,
     email: modificationResult.email,
@@ -23,30 +25,31 @@ function Result({ modificationResult, onBackToEdit, onShowAlert }: ResultProps) 
     professional_summary: modificationResult.professional_summary,
     skills: modificationResult.skills,
     experience: modificationResult.experience,
-    education: modificationResult.education
+    education: modificationResult.education,
   }
 
+  const jobTitle = modificationResult.job_title_from_jd || 'this role'
 
-  // DOCX download function
   const handleDocxDownload = async () => {
     try {
       const docxBlob = await generateDocx(templateData)
       const url = URL.createObjectURL(docxBlob)
       const link = document.createElement('a')
       link.href = url
-      
-      // Create filename with candidate name and job title for easy recognition
+
       const candidateName = templateData.full_name || 'Resume'
-      const jobTitle = modificationResult.job_title_from_jd || 'Position'
-      const sanitizedJobTitle = jobTitle.replace(/[^a-zA-Z0-9\s]/g, '').replace(/\s+/g, '_')
-      const sanitizedName = candidateName.replace(/[^a-zA-Z0-9\s]/g, '').replace(/\s+/g, '_')
-      
-      // Track DOCX download
+      const sanitizedJobTitle = jobTitle
+        .replace(/[^a-zA-Z0-9\s]/g, '')
+        .replace(/\s+/g, '_')
+      const sanitizedName = candidateName
+        .replace(/[^a-zA-Z0-9\s]/g, '')
+        .replace(/\s+/g, '_')
+
       posthog.capture('docx_downloaded', {
         job_title: jobTitle,
-        candidate_name: candidateName
+        candidate_name: candidateName,
       })
-      
+
       link.download = `${sanitizedName}_${sanitizedJobTitle}.docx`
       document.body.appendChild(link)
       link.click()
@@ -57,139 +60,78 @@ function Result({ modificationResult, onBackToEdit, onShowAlert }: ResultProps) 
       onShowAlert('Error generating DOCX file. Please try again.', 'Download failed')
     }
   }
+
   return (
-    <div className="min-h-screen bg-black flex flex-col relative">
-      <AnimatedStars />
-      <Header />
+    <div className="app-page flex min-h-[100dvh] flex-col">
+      <ApplicationHeader />
+      <WorkflowProgressBar phase="results" detailsComplete />
 
-      {/* Results Layout: Responsive */}
-      <div className="flex-1 flex flex-col lg:flex-row overflow-auto">
-        {/* Left Side Panel - Analysis */}
-        <div className="w-full lg:w-1/4 bg-black/10 backdrop-blur-sm border-b lg:border-b-0 lg:border-r border-gray-700/30 flex flex-col overflow-hidden relative z-10 mx-1 lg:mx-0 mb-2 lg:mb-0 rounded-lg lg:rounded-none">
-          {/* Changes Made Section */}
-          <div className="flex-1 p-4 overflow-y-auto custom-scrollbar">
-            <h3 className="text-lg font-semibold text-green-400 mb-4 poppins-font">Changes Made</h3>
-            <ul className="space-y-2 mb-6">
-              {modificationResult.change_summary.map((change, index) => (
-                <li key={index} className="flex items-start gap-2">
-                  <span className="text-green-500 mt-1 text-sm">•</span>
-                  <span className="text-sm text-gray-300 leading-relaxed poppins-font">{change}</span>
-                </li>
-              ))}
-            </ul>
+      <main className="mx-auto flex w-full max-w-7xl flex-1 flex-col gap-6 px-4 py-6 sm:px-6 lg:px-8 lg:py-8">
+        <div className="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
+          <div className="max-w-2xl">
+            <h1 className="text-2xl font-bold tracking-tight text-slate-900 sm:text-3xl">
+              Your tailored resume
+            </h1>
+            <p className="mt-2 text-base leading-relaxed text-slate-600">
+              Optimized for{' '}
+              <span className="font-medium text-slate-800">{jobTitle}</span>. Review
+              the changes, then download your ATS-friendly resume.
+            </p>
+          </div>
 
-            {/* Skills Changes Section */}
-            {(modificationResult.skills_added?.length > 0 || modificationResult.skills_removed?.length > 0) && (
-              <>
-                <h3 className="text-lg font-semibold text-blue-400 mb-4 poppins-font">Skills Optimization</h3>
-                {modificationResult.skills_added?.length > 0 && (
-                  <div className="mb-4">
-                    <h4 className="text-sm font-medium text-green-400 mb-2">Added Skills:</h4>
-                    <div className="flex flex-wrap gap-2">
-                      {modificationResult.skills_added.map((skill, index) => (
-                        <span key={index} className="px-2 py-1 bg-green-600/20 text-green-300 text-xs rounded border border-green-500/30">
-                          +{skill}
-                        </span>
-                      ))}
-                    </div>
-                  </div>
-                )}
-                {modificationResult.skills_removed?.length > 0 && (
-                  <div className="mb-4">
-                    <h4 className="text-sm font-medium text-red-400 mb-2">Removed Skills:</h4>
-                    <div className="flex flex-wrap gap-2">
-                      {modificationResult.skills_removed.map((skill, index) => (
-                        <span key={index} className="px-2 py-1 bg-red-600/20 text-red-300 text-xs rounded border border-red-500/30">
-                          -{skill}
-                        </span>
-                      ))}
-                    </div>
-                  </div>
-                )}
-              </>
-            )}
-
-            {/* Experience Transformation Section */}
-            {modificationResult.experience_transformed?.length > 0 && (
-              <>
-                <h3 className="text-lg font-semibold text-purple-400 mb-4 poppins-font">Experience Transformed</h3>
-                <ul className="space-y-2 mb-6">
-                  {modificationResult.experience_transformed.map((role, index) => (
-                    <li key={index} className="flex items-start gap-2">
-                      <span className="text-purple-500 mt-1 text-sm">•</span>
-                      <span className="text-sm text-gray-300 leading-relaxed poppins-font">{role}</span>
-                    </li>
-                  ))}
-                </ul>
-              </>
-            )}
-
-            {/* Suggestions Section */}
-            <h3 className="text-lg font-semibold text-green-400 mb-4 poppins-font">AI Suggestions</h3>
-            <ul className="space-y-2">
-              {modificationResult.suggestions.map((suggestion, index) => (
-                <li key={index} className="flex items-start gap-2">
-                  <span className="text-green-500 mt-1 text-sm">•</span>
-                  <span className="text-sm text-gray-300 leading-relaxed poppins-font">{suggestion}</span>
-                </li>
-              ))}
-            </ul>
+          <div className="hidden shrink-0 gap-2 sm:flex">
+            <LandingButton variant="secondary" onClick={onBackToEdit}>
+              <ArrowLeft size={18} aria-hidden="true" />
+              Back to edit
+            </LandingButton>
+            <LandingButton onClick={handleDocxDownload}>
+              <DownloadSimple size={18} weight="bold" aria-hidden="true" />
+              Download .docx
+            </LandingButton>
           </div>
         </div>
 
-        {/* Right Main Panel - Resume Display */}
-        <div className="flex-1 bg-black/10 backdrop-blur-sm flex flex-col overflow-hidden relative z-10 mx-1 lg:mx-0 rounded-lg lg:rounded-none">
-          <div className="px-4 sm:px-6 py-3 sm:py-4 border-b border-gray-700/30 flex-shrink-0 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 sm:gap-0">
-            <h2 className="text-lg sm:text-xl font-semibold text-green-400 poppins-font">Modified Resume</h2>
-            {/* Desktop/Tablet Buttons */}
-            <div className="hidden sm:flex flex-row gap-2">
-              <button
-                onClick={handleDocxDownload}
-                className="px-3 py-1.5 bg-green-600/90 backdrop-blur-sm hover:bg-green-700/90 text-white rounded-lg font-medium flex items-center justify-center gap-1.5 border border-green-500/40 hover:border-green-400/60 transition-all duration-200 poppins-font text-sm shadow-lg hover:shadow-green-500/20"
-              >
-                <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
-                </svg>
-                Download
-              </button>
-              <button
-                onClick={onBackToEdit}
-                className="px-3 py-1.5 bg-gray-600/90 backdrop-blur-sm hover:bg-gray-700/90 text-white rounded-lg font-medium flex items-center justify-center gap-1.5 border border-gray-500/40 hover:border-gray-400/60 transition-all duration-200 poppins-font text-sm shadow-lg hover:shadow-gray-500/20"
-              >
-                <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
-                </svg>
-                Back to Edit
-              </button>
+        <div className="grid flex-1 gap-6 lg:grid-cols-[minmax(280px,360px)_1fr]">
+          <aside className="rounded-xl border border-slate-200 bg-white p-5 lg:max-h-[calc(100dvh-16rem)] lg:overflow-y-auto">
+            <div className="mb-4 flex items-center gap-2">
+              <span className="inline-flex rounded-lg bg-teal-50 p-2 text-teal-700">
+                <FileText size={20} weight="duotone" aria-hidden="true" />
+              </span>
+              <h2 className="text-base font-semibold text-slate-900">
+                Optimization summary
+              </h2>
             </div>
-          </div>
-          <div className="flex-1 p-2 sm:p-4 lg:p-6 overflow-y-auto custom-scrollbar">
-            <div className="bg-white rounded-lg shadow-lg">
-              <Template data={templateData} />
+            <ResultAnalysisPanel result={modificationResult} />
+          </aside>
+
+          <section className="flex min-h-0 flex-col rounded-xl border border-slate-200 bg-slate-50">
+            <div className="border-b border-slate-200 bg-white px-5 py-4">
+              <h2 className="text-base font-semibold text-slate-900">
+                Modified resume preview
+              </h2>
+              <p className="mt-1 text-sm text-slate-500">
+                This is the formatted version that will be included in your download.
+              </p>
             </div>
-            
-            {/* Mobile Buttons - Bottom of Resume */}
-            <div className="sm:hidden mt-6 flex flex-col gap-3 w-full">
-              <button
-                onClick={handleDocxDownload}
-                className="w-full px-4 py-2.5 bg-green-600/90 backdrop-blur-sm hover:bg-green-700/90 text-white rounded-lg font-medium flex items-center justify-center gap-2 border border-green-500/40 hover:border-green-400/60 transition-all duration-200 poppins-font shadow-lg hover:shadow-green-500/20"
-              >
-                <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
-                </svg>
-                Download
-              </button>
-              <button
-                onClick={onBackToEdit}
-                className="w-full px-4 py-2.5 bg-gray-600/90 backdrop-blur-sm hover:bg-gray-700/90 text-white rounded-lg font-medium flex items-center justify-center gap-2 border border-gray-500/40 hover:border-gray-400/60 transition-all duration-200 poppins-font shadow-lg hover:shadow-gray-500/20"
-              >
-                <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
-                </svg>
-                Back to Edit
-              </button>
+            <div className="flex-1 overflow-y-auto p-4 sm:p-6">
+              <div className="overflow-hidden rounded-xl border border-slate-200 bg-white shadow-sm">
+                <Template data={templateData} />
+              </div>
             </div>
-          </div>
+          </section>
+        </div>
+      </main>
+
+      <div className="sticky bottom-0 border-t border-slate-200 bg-white/95 backdrop-blur-sm sm:hidden">
+        <div className="mx-auto flex max-w-7xl flex-col gap-2 px-4 py-4">
+          <LandingButton onClick={handleDocxDownload}>
+            <DownloadSimple size={18} weight="bold" aria-hidden="true" />
+            Download .docx
+          </LandingButton>
+          <LandingButton variant="secondary" onClick={onBackToEdit}>
+            <ArrowLeft size={18} aria-hidden="true" />
+            Back to edit
+          </LandingButton>
         </div>
       </div>
     </div>

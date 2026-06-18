@@ -1,74 +1,46 @@
-import AnimatedStars from './AnimatedStars'
-import Header from '../components/Header'
+import ApplicationHeader from '../components/app/ApplicationHeader'
+import WorkflowProgressBar from '../components/app/WorkflowProgressBar'
+import '../styles/product.css'
 
 function LoadingSkeleton() {
   return (
-    <div className="min-h-screen bg-black flex flex-col relative">
-      <AnimatedStars />
-      <Header variant="compact" />
+    <div className="app-page flex min-h-[100dvh] flex-col">
+      <ApplicationHeader />
+      <WorkflowProgressBar phase="generating" detailsComplete />
 
-      {/* Loading Layout: Responsive */}
-      <div className="flex-1 flex flex-col lg:flex-row overflow-auto">
-        {/* Left Side Panel - Analysis */}
-        <div className="w-full lg:w-1/4 bg-black/10 backdrop-blur-sm border-b lg:border-b-0 lg:border-r border-gray-700/30 flex flex-col overflow-hidden relative z-10 mx-1 lg:mx-0 mb-2 lg:mb-0 rounded-lg lg:rounded-none">
-          <div className="flex-1 p-4 overflow-y-auto">
-            <div className="mb-6">
-              <div className="h-6 bg-gray-700 rounded w-32 mb-4 animate-pulse" />
-              <div className="space-y-3">
-                {[1, 2, 3, 4].map((item) => (
-                  <div key={item} className="flex items-start gap-2">
-                    <div className="w-2 h-2 bg-gray-600 rounded-full mt-2 animate-pulse" />
-                    <div className="flex-1">
-                      <div className="h-4 bg-gray-700 rounded animate-pulse mb-1" />
-                      <div className="h-4 bg-gray-700 rounded w-3/4 animate-pulse" />
-                    </div>
-                  </div>
-                ))}
-              </div>
-            </div>
-
-            <div>
-              <div className="h-6 bg-gray-700 rounded w-28 mb-4 animate-pulse" />
-              <div className="space-y-3">
-                {[1, 2, 3].map((item) => (
-                  <div key={item} className="flex items-start gap-2">
-                    <div className="w-2 h-2 bg-gray-600 rounded-full mt-2 animate-pulse" />
-                    <div className="flex-1">
-                      <div className="h-4 bg-gray-700 rounded animate-pulse mb-1" />
-                      <div className="h-4 bg-gray-700 rounded w-4/5 animate-pulse" />
-                    </div>
-                  </div>
-                ))}
-              </div>
-            </div>
-          </div>
+      <main className="mx-auto flex w-full max-w-7xl flex-1 flex-col gap-6 px-4 py-6 sm:px-6 lg:px-8 lg:py-8">
+        <div className="max-w-2xl">
+          <div className="h-8 w-64 animate-pulse rounded-lg bg-slate-200" />
+          <div className="mt-3 h-4 w-full max-w-lg animate-pulse rounded bg-slate-200" />
+          <div className="mt-2 h-4 w-2/3 animate-pulse rounded bg-slate-200" />
         </div>
 
-        {/* Right Main Panel - Resume Display */}
-        <div className="flex-1 bg-black/10 backdrop-blur-sm flex flex-col overflow-hidden relative z-10 mx-1 lg:mx-0 rounded-lg lg:rounded-none">
-          <div className="px-4 sm:px-6 py-3 sm:py-4 border-b border-gray-700/30 flex-shrink-0">
-            <div className="h-6 bg-gray-700 rounded w-40 animate-pulse" />
-          </div>
-          <div className="flex-1 p-2 sm:p-4 lg:p-6 overflow-hidden">
-            <div className="w-full h-full border border-gray-600/30 rounded-md p-4 bg-black/10 backdrop-blur-sm">
-              <div className="space-y-4">
-                {[1, 2, 3, 4, 5, 6, 7, 8, 9, 10].map((line) => (
-                  <div key={line} className="space-y-2">
-                    <div className="h-4 bg-gray-700 rounded animate-pulse" />
-                    <div className="h-4 bg-gray-700 rounded w-5/6 animate-pulse" />
-                    <div className="h-4 bg-gray-700 rounded w-4/5 animate-pulse" />
-                  </div>
-                ))}
-              </div>
-
-              <div className="sm:hidden mt-6 flex flex-col gap-3 w-full">
-                <div className="w-full px-4 py-3 bg-gray-700 rounded-md h-12 animate-pulse" />
-                <div className="w-full px-4 py-3 bg-gray-700 rounded-md h-12 animate-pulse" />
-              </div>
+        <div className="grid flex-1 gap-6 lg:grid-cols-[minmax(280px,360px)_1fr]">
+          <aside className="rounded-xl border border-slate-200 bg-white p-5">
+            <div className="mb-6 h-5 w-40 animate-pulse rounded bg-slate-200" />
+            <div className="space-y-4">
+              {[1, 2, 3, 4].map((item) => (
+                <div key={item} className="space-y-2">
+                  <div className="h-4 w-full animate-pulse rounded bg-slate-100" />
+                  <div className="h-4 w-5/6 animate-pulse rounded bg-slate-100" />
+                </div>
+              ))}
             </div>
-          </div>
+          </aside>
+
+          <section className="rounded-xl border border-slate-200 bg-slate-50 p-4 sm:p-6">
+            <div className="mb-4 h-5 w-48 animate-pulse rounded bg-slate-200" />
+            <div className="space-y-3 rounded-xl border border-slate-200 bg-white p-6">
+              {[1, 2, 3, 4, 5, 6, 7, 8].map((line) => (
+                <div key={line} className="space-y-2">
+                  <div className="h-4 animate-pulse rounded bg-slate-100" />
+                  <div className="h-4 w-11/12 animate-pulse rounded bg-slate-100" />
+                </div>
+              ))}
+            </div>
+          </section>
         </div>
-      </div>
+      </main>
     </div>
   )
 }
