@@ -17,6 +17,7 @@
     "dotenv": "^17.4.2",
     "mammoth": "^1.11.0",
     "openai": "^6.8.1",
+    "pdfjs-dist": "^6.0.227",
     "posthog-js": "^1.311.0",
     "react": "^19.1.1",
     "react-dom": "^19.1.1",

@@ -80,7 +80,7 @@ function App() {
 
     if (!resumeText.trim()) {
       setInlineValidationMessage(
-        'Upload a .docx resume file to continue.'
+        'Upload a .docx or .pdf resume file to continue.'
       )
       return
     }

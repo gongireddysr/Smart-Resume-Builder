@@ -1,6 +1,5 @@
 import { useCallback, useRef, useState } from 'react'
 import posthog from 'posthog-js'
-import mammoth from 'mammoth'
 import {
   CheckCircle,
   DownloadSimple,
@@ -10,6 +9,12 @@ import {
 } from '@phosphor-icons/react'
 import AppCard from './app/AppCard'
 import InlineAlert from './app/InlineAlert'
+import {
+  extractResumeText,
+  getSupportedResumeFormat,
+  RESUME_FILE_ACCEPT,
+  resumeFileToTxtName,
+} from '../utils/extractResumeText'
 
 interface RightPanelProps {
   uploadedFile: File | null
@@ -46,13 +51,10 @@ function RightPanel({
     async (file: File, inputElement?: HTMLInputElement | null) => {
       setUploadError(null)
 
-      const isDocx =
-        file.type ===
-          'application/vnd.openxmlformats-officedocument.wordprocessingml.document' ||
-        file.name.toLowerCase().endsWith('.docx')
+      const format = getSupportedResumeFormat(file)
 
-      if (!isDocx) {
-        setUploadError({ message: 'Please upload a .docx file only.' })
+      if (!format) {
+        setUploadError({ message: 'Please upload a .docx or .pdf file only.' })
         if (inputElement) inputElement.value = ''
         return
       }
@@ -61,13 +63,12 @@ function RightPanel({
       setIsFileLoading(true)
 
       try {
-        const arrayBuffer = await file.arrayBuffer()
-        const result = await mammoth.extractRawText({ arrayBuffer })
-        const extractedText = result.value
+        const extractedText = await extractResumeText(file)
 
         posthog.capture('resume_uploaded', {
           file_name: file.name,
           file_size: file.size,
+          file_type: format,
           text_length: extractedText.length,
         })
 
@@ -145,7 +146,7 @@ function RightPanel({
       const url = URL.createObjectURL(blob)
       const link = document.createElement('a')
       link.href = url
-      link.download = uploadedFile.name.replace(/\.docx$/i, '.txt') || 'resume.txt'
+      link.download = resumeFileToTxtName(uploadedFile.name)
       document.body.appendChild(link)
       link.click()
       document.body.removeChild(link)
@@ -161,7 +162,7 @@ function RightPanel({
   return (
     <AppCard
       title="Resume upload"
-      description="Upload a .docx file. You can review and edit the extracted text before generating."
+      description="Upload a .docx or .pdf file. You can review and edit the extracted text before generating."
       icon={<FileDoc size={20} weight="duotone" aria-hidden="true" />}
       status={
         uploadedFile ? (
@@ -215,14 +216,14 @@ function RightPanel({
         ref={fileInputRef}
         id="file-upload"
         type="file"
-        accept=".docx,application/vnd.openxmlformats-officedocument.wordprocessingml.document"
+        accept={RESUME_FILE_ACCEPT}
         onChange={handleFileInputChange}
         className="hidden"
       />
       <input
         ref={replaceInputRef}
         type="file"
-        accept=".docx,application/vnd.openxmlformats-officedocument.wordprocessingml.document"
+        accept={RESUME_FILE_ACCEPT}
         onChange={handleFileInputChange}
         className="hidden"
         aria-hidden="true"
@@ -245,8 +246,8 @@ function RightPanel({
         <div className="flex min-h-0 flex-1 flex-col gap-3">
           {isEmptyExtract && (
             <InlineAlert variant="warning" title="No text found">
-              This document appears empty. Try a different .docx file or paste your
-              resume text below.
+              This document appears empty. Try a different .docx or .pdf file, or paste
+              your resume text below.
             </InlineAlert>
           )}
           <label htmlFor="resume-text" className="text-sm font-medium text-[var(--brand-ink-secondary)]">
@@ -283,9 +284,11 @@ function RightPanel({
             onClick={() => fileInputRef.current?.click()}
             className="brand-btn brand-btn-primary mt-4 px-4 py-2"
           >
-            Choose .docx file
+            Choose file
           </button>
-          <p className="mt-4 text-xs text-[var(--brand-muted)]">Microsoft Word .docx files only</p>
+          <p className="mt-4 text-xs text-[var(--brand-muted)]">
+            Microsoft Word .docx or PDF files
+          </p>
         </div>
       )}
     </AppCard>
