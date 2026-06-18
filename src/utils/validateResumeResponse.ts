@@ -15,6 +15,23 @@ function toStringArray(value: unknown): string[] {
   return value.map((item) => (typeof item === 'string' ? item : String(item)))
 }
 
+function parseExperienceDates(dates: string): { start_date: string; end_date: string } {
+  const trimmed = dates.trim()
+  if (!trimmed) {
+    return { start_date: '', end_date: '' }
+  }
+
+  const rangeMatch = trimmed.match(/^(.+?)\s*[-–—]\s*(.+)$/)
+  if (rangeMatch) {
+    return {
+      start_date: rangeMatch[1].trim(),
+      end_date: rangeMatch[2].trim(),
+    }
+  }
+
+  return { start_date: trimmed, end_date: '' }
+}
+
 function normalizeExperience(value: unknown): ResumeExperience[] {
   if (!Array.isArray(value)) return []
 
@@ -22,21 +39,54 @@ function normalizeExperience(value: unknown): ResumeExperience[] {
   for (const job of value) {
     if (!job || typeof job !== 'object') continue
     const entry = job as Record<string, unknown>
+    const parsedDates = parseExperienceDates(toStringField(entry.dates))
+
     jobs.push({
       company: toStringField(entry.company),
       job_title: toStringField(entry.job_title),
-      start_date: toStringField(entry.start_date),
-      end_date: toStringField(entry.end_date),
-      bullet_points: toStringArray(entry.bullet_points),
+      start_date: toStringField(entry.start_date) || parsedDates.start_date,
+      end_date: toStringField(entry.end_date) || parsedDates.end_date,
+      bullet_points: toStringArray(entry.bullet_points ?? entry.responsibilities),
     })
   }
   return jobs
+}
+
+function normalizeSkills(value: unknown): string {
+  if (typeof value === 'string') return value
+  if (Array.isArray(value)) {
+    return value
+      .map((item) => (typeof item === 'string' ? item.trim() : String(item)))
+      .filter(Boolean)
+      .join(', ')
+  }
+  if (value == null) return ''
+  return String(value)
+}
+
+function normalizeEducation(value: unknown, certifications: unknown): string {
+  const educationParts = Array.isArray(value)
+    ? toStringArray(value)
+    : [toStringField(value)].filter(Boolean)
+  const certificationParts = toStringArray(certifications)
+
+  return [...educationParts, ...certificationParts].filter(Boolean).join('\n')
 }
 
 /** Coerce common OpenAI shape issues (null contact fields, missing arrays) before validation */
 function normalizeResumeModificationResponse(data: unknown): ResumeModificationResponse {
   const record =
     data && typeof data === 'object' ? (data as Record<string, unknown>) : {}
+
+  const alignmentScore =
+    typeof record.target_role_alignment_score === 'number'
+      ? record.target_role_alignment_score
+      : null
+
+  const changeSummary = toStringArray(record.change_summary)
+  if (changeSummary.length === 0 && alignmentScore != null) {
+    changeSummary.push(`Target role alignment score: ${alignmentScore}/100`)
+  }
 
   return {
     job_title_from_jd: toStringField(record.job_title_from_jd, 'Position'),
@@ -46,11 +96,11 @@ function normalizeResumeModificationResponse(data: unknown): ResumeModificationR
     location: toStringField(record.location),
     urls: toStringField(record.urls),
     professional_summary: toStringField(record.professional_summary),
-    skills: toStringField(record.skills),
-    education: toStringField(record.education),
+    skills: normalizeSkills(record.skills),
+    education: normalizeEducation(record.education, record.certifications),
     experience: normalizeExperience(record.experience),
-    change_summary: toStringArray(record.change_summary),
-    skills_added: toStringArray(record.skills_added),
+    change_summary: changeSummary,
+    skills_added: toStringArray(record.skills_added ?? record.ats_keywords_added),
     skills_removed: toStringArray(record.skills_removed),
     skills_boosted: toStringArray(record.skills_boosted),
     experience_transformed: toStringArray(record.experience_transformed),
