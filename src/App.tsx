@@ -13,7 +13,6 @@ import CustomAlert from './utils/CustomAlert'
 import { isResumeModificationResponse } from './utils/validateResumeResponse'
 import type { ResumeModificationResponse } from './types/resume'
 import { DEFAULT_USER_PREFERENCES, type UserPreferences } from './types/userPreferences'
-import './App.css'
 import './styles/product.css'
 
 const Result = lazy(() => import('./components/Result'))
@@ -206,7 +205,7 @@ function App() {
   return (
     <div className="app-page flex min-h-[100dvh] flex-col">
       <ApplicationHeader />
-      <WorkflowProgressBar detailsComplete={detailsComplete} />
+      <WorkflowProgressBar phase="input" detailsComplete={detailsComplete} />
 
       <main className="mx-auto flex w-full max-w-7xl flex-1 flex-col gap-6 px-4 py-6 sm:px-6 lg:px-8 lg:py-8">
         <div className="max-w-3xl">

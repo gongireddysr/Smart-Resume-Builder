@@ -1,7 +1,10 @@
 import { Check } from "@phosphor-icons/react";
 
+export type WorkflowPhase = "input" | "generating" | "results";
+
 interface WorkflowProgressBarProps {
-  detailsComplete: boolean;
+  phase: WorkflowPhase;
+  detailsComplete?: boolean;
 }
 
 type StepState = "completed" | "active" | "upcoming";
@@ -11,6 +14,7 @@ interface Step {
   label: string;
   shortLabel: string;
   state: StepState;
+  sublabel?: string;
 }
 
 function StepIndicator({ state }: { state: StepState }) {
@@ -37,19 +41,46 @@ function StepIndicator({ state }: { state: StepState }) {
   );
 }
 
-function WorkflowProgressBar({ detailsComplete }: WorkflowProgressBarProps) {
-  const steps: Step[] = [
+function getSteps(phase: WorkflowPhase, detailsComplete: boolean): Step[] {
+  const detailsState: StepState =
+    phase === "input" && !detailsComplete ? "active" : "completed";
+
+  const resultsState: StepState =
+    phase === "results"
+      ? "completed"
+      : phase === "generating"
+        ? "active"
+        : "upcoming";
+
+  return [
     { id: "landing", label: "Landing", shortLabel: "Landing", state: "completed" },
     {
       id: "details",
       label: "Resume & Job Details",
       shortLabel: "Details",
-      state: detailsComplete ? "completed" : "active",
+      state: detailsState,
+      sublabel:
+        detailsState === "completed" && phase === "input"
+          ? "Ready to generate"
+          : undefined,
     },
-    { id: "results", label: "Results", shortLabel: "Results", state: "upcoming" },
+    {
+      id: "results",
+      label: "Results",
+      shortLabel: "Results",
+      state: resultsState,
+      sublabel: phase === "generating" ? "Generating resume..." : undefined,
+    },
   ];
+}
 
-  const activeStepId = "details";
+function WorkflowProgressBar({
+  phase,
+  detailsComplete = false,
+}: WorkflowProgressBarProps) {
+  const steps = getSteps(phase, detailsComplete);
+  const activeStepId =
+    phase === "results" ? "results" : phase === "generating" ? "results" : "details";
 
   return (
     <nav
@@ -60,9 +91,7 @@ function WorkflowProgressBar({ detailsComplete }: WorkflowProgressBarProps) {
         <ol className="flex items-center justify-between gap-2 sm:justify-center sm:gap-0">
           {steps.map((step, index) => {
             const isLast = index === steps.length - 1;
-            const connectorComplete =
-              step.state === "completed" ||
-              (index === 1 && detailsComplete);
+            const connectorComplete = step.state === "completed";
 
             return (
               <li
@@ -83,15 +112,16 @@ function WorkflowProgressBar({ detailsComplete }: WorkflowProgressBarProps) {
                       }`}
                     >
                       <span className="sm:hidden">{step.shortLabel}</span>
-                      <span className="hidden sm:inline">
-                        {step.state === "completed" && step.id === "details"
-                          ? "Resume & Job Details"
-                          : step.label}
-                      </span>
+                      <span className="hidden sm:inline">{step.label}</span>
                     </p>
-                    {step.state === "completed" && step.id === "details" && (
+                    {step.sublabel && (
                       <p className="hidden text-xs text-teal-700 sm:block">
-                        Ready to generate
+                        {step.sublabel}
+                      </p>
+                    )}
+                    {phase === "results" && step.id === "results" && (
+                      <p className="hidden text-xs text-teal-700 sm:block">
+                        Resume ready
                       </p>
                     )}
                   </div>

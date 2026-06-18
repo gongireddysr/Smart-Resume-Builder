@@ -1,3 +1,5 @@
+import { WarningCircle, X } from '@phosphor-icons/react'
+
 interface CustomAlertProps {
   isVisible: boolean
   message: string
@@ -27,7 +29,7 @@ function CustomAlert({
 
   return (
     <div
-      className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center z-50"
+      className="fixed inset-0 z-50 flex items-center justify-center bg-slate-900/40 p-4"
       role="dialog"
       aria-modal="true"
       aria-labelledby="custom-alert-title"
@@ -36,57 +38,42 @@ function CustomAlert({
       onKeyDown={handleKeyDown}
       tabIndex={-1}
     >
-      <div className="relative bg-black/20 backdrop-blur-md border border-red-500/50 rounded-lg p-6 pt-8 max-w-md mx-4 shadow-2xl animate-fade-in">
+      <div className="relative w-full max-w-md rounded-xl border border-slate-200 bg-white p-6 pt-8 shadow-xl animate-fade-in">
         <button
           type="button"
           onClick={onClose}
-          className="absolute right-3 top-3 rounded-md p-1.5 text-gray-300 transition-colors hover:bg-white/10 hover:text-white"
+          className="absolute right-3 top-3 rounded-md p-1.5 text-slate-400 transition-colors hover:bg-slate-100 hover:text-slate-700"
           aria-label="Close alert"
         >
-          <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
-          </svg>
+          <X size={18} weight="bold" aria-hidden="true" />
         </button>
 
         <div className="flex items-start gap-4 pr-6">
-          <div className="flex-shrink-0">
-            <svg
-              className="w-6 h-6 text-red-400"
-              fill="none"
-              stroke="currentColor"
-              viewBox="0 0 24 24"
-              aria-hidden="true"
-            >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth={2}
-                d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.964-.833-2.732 0L4.082 16.5c-.77.833.192 2.5 1.732 2.5z"
-              />
-            </svg>
-          </div>
+          <span className="inline-flex rounded-full bg-red-50 p-2 text-red-600">
+            <WarningCircle size={22} weight="fill" aria-hidden="true" />
+          </span>
 
           <div className="flex-1">
             <h3
               id="custom-alert-title"
-              className="text-lg font-semibold text-red-400 mb-2 poppins-font"
+              className="mb-2 text-lg font-semibold text-slate-900"
             >
               {title}
             </h3>
             <p
               id="custom-alert-message"
-              className="text-gray-300 text-sm leading-relaxed poppins-font"
+              className="text-sm leading-relaxed text-slate-600"
             >
               {message}
             </p>
           </div>
         </div>
 
-        <div className="mt-4 flex justify-end">
+        <div className="mt-6 flex justify-end">
           <button
             type="button"
             onClick={onClose}
-            className="px-4 py-2 bg-red-600/80 backdrop-blur-sm hover:bg-red-700/80 text-white rounded-md font-medium border border-red-500/30 transition-all duration-200 poppins-font"
+            className="rounded-lg bg-teal-600 px-4 py-2 text-sm font-semibold text-white transition-colors hover:bg-teal-700"
           >
             Got it
           </button>
