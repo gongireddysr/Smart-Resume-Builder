@@ -12,8 +12,6 @@ Your task is to modify a candidate's resume based ONLY on:
 2. Parsed Job Description Data
 3. User Preferences
 
-Do NOT invent experience, employers, certifications, degrees, projects, or technologies that do not already exist in the candidate's background.
-
 ---
 
 # OBJECTIVE
