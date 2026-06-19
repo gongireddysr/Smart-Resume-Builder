@@ -77,7 +77,8 @@ function Result({ modificationResult, onBackToEdit, onShowAlert }: ResultProps) 
     }
   }
 
-  const singlePreviewTemplateClass = '!max-w-none !mx-0 w-full !p-4 sm:!p-5 lg:!p-6'
+  const singlePreviewTemplateClass =
+    '!max-w-none !mx-0 w-full !p-3 sm:!p-4 lg:!p-5'
   const comparePreviewTemplateClass = '!max-w-4xl !mx-auto w-full !p-4 sm:!p-5 lg:!p-6'
 
   const renderUpdatedResume = (variant: 'default' | 'single' | 'compare' = 'default') => {
@@ -100,11 +101,11 @@ function Result({ modificationResult, onBackToEdit, onShowAlert }: ResultProps) 
   }
 
   const viewModeToggle = (
-    <div className="inline-flex rounded-lg border border-[var(--brand-border)] bg-[var(--brand-surface)] p-1">
+    <div className="inline-flex min-w-[12.5rem] rounded-lg border border-[var(--brand-border)] bg-[var(--brand-surface)] p-1 sm:min-w-[14rem]">
       <button
         type="button"
         onClick={() => handleViewModeChange('single')}
-        className={`rounded-md px-3 py-1.5 text-xs font-semibold transition-colors sm:text-sm ${
+        className={`flex-1 rounded-md px-4 py-2 text-xs font-semibold transition-colors sm:px-5 sm:text-sm ${
           viewMode === 'single'
             ? 'bg-[var(--brand-header)] text-white'
             : 'text-[var(--brand-ink-secondary)] hover:text-[var(--brand-ink)]'
@@ -115,7 +116,7 @@ function Result({ modificationResult, onBackToEdit, onShowAlert }: ResultProps) 
       <button
         type="button"
         onClick={() => handleViewModeChange('compare')}
-        className={`inline-flex items-center gap-1.5 rounded-md px-3 py-1.5 text-xs font-semibold transition-colors sm:text-sm ${
+        className={`inline-flex flex-1 items-center justify-center gap-1.5 rounded-md px-4 py-2 text-xs font-semibold transition-colors sm:px-5 sm:text-sm ${
           viewMode === 'compare'
             ? 'bg-[var(--brand-primary)] text-white'
             : 'text-[var(--brand-ink-secondary)] hover:text-[var(--brand-ink)]'
@@ -166,10 +167,10 @@ function Result({ modificationResult, onBackToEdit, onShowAlert }: ResultProps) 
       )}
 
       <main
-        className={`flex min-h-0 flex-1 flex-col overflow-hidden ${
+        className={`flex min-h-0 flex-1 flex-col ${
           viewMode === 'compare'
-            ? 'w-full px-3 py-2 sm:px-4 sm:py-3'
-            : 'mx-auto w-full max-w-7xl gap-5 px-4 py-5 sm:px-6 lg:px-8 lg:py-6'
+            ? 'w-full overflow-hidden px-3 py-2 sm:px-4 sm:py-3'
+            : 'mx-auto w-full max-w-[1720px] gap-4 px-4 py-4 sm:gap-5 sm:px-5 sm:py-5 lg:gap-6 lg:px-6'
         }`}
       >
         {viewMode === 'compare' ? (
@@ -234,10 +235,10 @@ function Result({ modificationResult, onBackToEdit, onShowAlert }: ResultProps) 
           </div>
         ) : (
           <>
-            <div className="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
+            <div className="flex shrink-0 flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
               <div className="max-w-2xl">
                 <h1 className="brand-heading text-2xl sm:text-3xl">Your tailored resume</h1>
-                <p className="brand-lead mt-2 text-base">
+                <p className="brand-lead mt-1 text-base sm:mt-2">
                   Optimized for{' '}
                   <span className="font-semibold text-[var(--brand-ink)]">{jobTitle}</span>.
                   Review the optimization summary, edit if needed, then download.
@@ -246,9 +247,9 @@ function Result({ modificationResult, onBackToEdit, onShowAlert }: ResultProps) 
               {desktopActions}
             </div>
 
-            <div className="grid min-h-0 flex-1 items-stretch gap-5 lg:grid-cols-[minmax(240px,300px)_minmax(0,1fr)]">
-              <aside className="brand-panel flex flex-col self-stretch p-4 sm:p-5">
-                <div className="mb-4 flex items-center gap-2">
+            <div className="grid grid-cols-1 items-stretch gap-4 md:grid-cols-[minmax(0,35fr)_minmax(0,65fr)] md:gap-5 lg:grid-cols-[minmax(0,30fr)_minmax(0,70fr)] lg:gap-6">
+              <aside className="brand-panel flex h-full min-h-0 min-w-0 flex-col overflow-hidden p-4 sm:p-5">
+                <div className="mb-4 flex shrink-0 items-center gap-2">
                   <span className="brand-icon-wrap">
                     <FileText size={20} weight="duotone" aria-hidden="true" />
                   </span>
@@ -256,13 +257,15 @@ function Result({ modificationResult, onBackToEdit, onShowAlert }: ResultProps) 
                     Optimization summary
                   </h2>
                 </div>
-                <ResultAnalysisPanel result={modificationResult} />
+                <div className="min-h-0 flex-1 overflow-y-auto overscroll-y-contain">
+                  <ResultAnalysisPanel result={modificationResult} />
+                </div>
               </aside>
 
-              <section className="brand-card flex min-h-0 flex-col self-stretch overflow-hidden">
-                <div className="brand-card-header px-4 py-3 sm:px-5">
+              <section className="brand-card flex h-full min-h-0 min-w-0 flex-col overflow-hidden">
+                <div className="brand-card-header shrink-0 px-4 py-3 sm:px-5">
                   <div className="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
-                    <div>
+                    <div className="min-w-0">
                       <h2 className="text-base font-semibold text-[var(--brand-ink)]">
                         Modified resume preview
                       </h2>
@@ -272,14 +275,16 @@ function Result({ modificationResult, onBackToEdit, onShowAlert }: ResultProps) 
                           : 'Enable edit mode to make changes before downloading.'}
                       </p>
                     </div>
-                    <div className="flex shrink-0 flex-wrap items-center gap-2">
+                    <div className="flex shrink-0 flex-wrap items-center gap-2 sm:gap-3">
                       {viewModeToggle}
                       {editToggle}
                     </div>
                   </div>
                 </div>
-                <div className="min-h-0 flex-1 overflow-y-auto bg-[var(--brand-surface)]">
-                  {renderUpdatedResume('single')}
+                <div className="flex-1 bg-[var(--brand-surface)] px-3 py-3 sm:px-4 sm:py-4">
+                  <div className="mx-auto w-full max-w-4xl">
+                    {renderUpdatedResume('single')}
+                  </div>
                 </div>
               </section>
             </div>
@@ -288,8 +293,8 @@ function Result({ modificationResult, onBackToEdit, onShowAlert }: ResultProps) 
       </main>
 
       {viewMode === 'single' && (
-        <div className="brand-footer-bar sticky bottom-0 sm:hidden">
-          <div className="mx-auto flex max-w-7xl flex-col gap-2 px-4 py-4">
+        <div className="brand-footer-bar shrink-0 sm:hidden">
+          <div className="mx-auto flex w-full max-w-[1720px] flex-col gap-2 px-4 py-4 sm:px-5 lg:px-6">
             <LandingButton onClick={handleDocxDownload}>
               <DownloadSimple size={18} weight="bold" aria-hidden="true" />
               Download .docx
