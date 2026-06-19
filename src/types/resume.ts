@@ -44,4 +44,5 @@ export interface ResumeModificationResponse {
   experience_transformed: string[]
   warnings: string[]
   suggestions: string[]
+  original_resume: TemplateData
 }

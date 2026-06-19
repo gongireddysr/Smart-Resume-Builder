@@ -1,4 +1,4 @@
-import type { ResumeExperience, ResumeModificationResponse } from '../types/resume'
+import type { ResumeExperience, ResumeModificationResponse, TemplateData } from '../types/resume'
 
 function isStringArray(value: unknown): value is string[] {
   return Array.isArray(value) && value.every((item) => typeof item === 'string')
@@ -73,6 +73,56 @@ function normalizeEducation(value: unknown, certifications: unknown): string {
   return [...educationParts, ...certificationParts].filter(Boolean).join('\n')
 }
 
+function normalizeTemplateData(value: unknown): TemplateData {
+  const record = value && typeof value === 'object' ? (value as Record<string, unknown>) : {}
+
+  return {
+    full_name: toStringField(record.full_name),
+    email: toStringField(record.email),
+    phone: toStringField(record.phone),
+    location: toStringField(record.location),
+    urls: toStringField(record.urls),
+    professional_summary: toStringField(record.professional_summary),
+    skills: normalizeSkills(record.skills),
+    education: toStringField(record.education),
+    experience: normalizeExperience(record.experience),
+  }
+}
+
+function isTemplateData(value: unknown): value is TemplateData {
+  if (!value || typeof value !== 'object') return false
+
+  const record = value as Record<string, unknown>
+  const stringFields = [
+    'full_name',
+    'email',
+    'phone',
+    'location',
+    'urls',
+    'professional_summary',
+    'skills',
+    'education',
+  ] as const
+
+  for (const key of stringFields) {
+    if (typeof record[key] !== 'string') return false
+  }
+
+  if (!Array.isArray(record.experience)) return false
+
+  for (const job of record.experience) {
+    if (!job || typeof job !== 'object') return false
+    const entry = job as Record<string, unknown>
+    if (typeof entry.company !== 'string') return false
+    if (typeof entry.job_title !== 'string') return false
+    if (typeof entry.start_date !== 'string') return false
+    if (typeof entry.end_date !== 'string') return false
+    if (!isStringArray(entry.bullet_points)) return false
+  }
+
+  return true
+}
+
 /** Coerce common OpenAI shape issues (null contact fields, missing arrays) before validation */
 function normalizeResumeModificationResponse(data: unknown): ResumeModificationResponse {
   const record =
@@ -106,6 +156,7 @@ function normalizeResumeModificationResponse(data: unknown): ResumeModificationR
     experience_transformed: toStringArray(record.experience_transformed),
     warnings: toStringArray(record.warnings),
     suggestions: toStringArray(record.suggestions),
+    original_resume: normalizeTemplateData(record.original_resume),
   }
 }
 
@@ -157,6 +208,8 @@ export function isResumeModificationResponse(
     if (typeof entry.end_date !== 'string') return false
     if (!isStringArray(entry.bullet_points)) return false
   }
+
+  if (!isTemplateData(record.original_resume)) return false
 
   return true
 }
