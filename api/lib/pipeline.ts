@@ -3,6 +3,7 @@ import { LAYER1_RESUME_PARSE_PROMPT } from "../../prompts/layer1-resume-parse";
 import { LAYER2_JD_PARSE_PROMPT } from "../../prompts/layer2-jd-parse";
 import { LAYER3_MATCH_PROMPT } from "../../prompts/layer3-match";
 import { assembleGenerationPrompt } from "../../src/layer5/assembleGenerationPrompt";
+import { parsedResumeToTemplateData } from "../../src/utils/resumeData";
 import type { ParsedJobDescription } from "../../src/types/parsedJobDescription";
 import type { ParsedResume } from "../../src/types/parsedResume";
 import type { ResumeModificationResponse } from "../../src/types/resume";
@@ -145,11 +146,16 @@ export async function runResumeModificationPipeline(
     jobDescription,
   });
 
-  return generateResumeLayer(
+  const modificationResult = await generateResumeLayer(
     openai,
     system_prompt,
     user_prompt,
     parsedResume,
     parsedJobDescription
   );
+
+  return {
+    ...modificationResult,
+    original_resume: parsedResumeToTemplateData(parsedResume),
+  };
 }
