@@ -11,5 +11,5 @@
     "isolatedModules": true,
     "esModuleInterop": true
   },
-  "include": ["./**/*.ts", "../prompts/**/*.ts", "../src/layer5/**/*.ts", "../src/types/**/*.ts", "../src/utils/validate*.ts", "../src/utils/resumeData.ts"]
+  "include": ["./**/*.ts", "../lib/**/*.ts", "../prompts/**/*.ts"]
 }

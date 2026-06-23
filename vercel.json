@@ -2,7 +2,7 @@
   "functions": {
     "api/modify-resume.ts": {
       "maxDuration": 60,
-      "includeFiles": "prompts/**,src/layer5/**,src/types/**,src/utils/validate*.ts,src/utils/resumeData.ts"
+      "includeFiles": "prompts/**,lib/**"
     },
     "api/ping.ts": {
       "maxDuration": 10

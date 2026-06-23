@@ -1,8 +1,8 @@
 import type { VercelRequest, VercelResponse } from "@vercel/node";
 import { createOpenAiClient, getOpenAiApiKey } from "./lib/openaiEnv";
 import { runResumeModificationPipeline } from "./lib/pipeline";
-import type { ResumeModificationRequest } from "../src/types/resume";
-import { normalizeUserPreferences } from "../src/utils/validateUserPreferences";
+import type { ResumeModificationRequest } from "../lib/types/resume";
+import { normalizeUserPreferences } from "../lib/validateUserPreferences";
 
 export const config = {
   maxDuration: 60,
