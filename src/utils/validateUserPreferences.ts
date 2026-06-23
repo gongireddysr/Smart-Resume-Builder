@@ -4,7 +4,7 @@ import {
   type UserPreferences,
 } from '../types/userPreferences'
 
-const OUTPUT_LENGTHS = new Set(['concise', 'balanced', 'detailed'])
+const OUTPUT_LENGTHS = new Set(['concise', 'balanced', 'detailed', 'comprehensive'])
 const FOCUS_OPTIONS = new Set(['general', 'technical', 'leadership'])
 const TONE_OPTIONS = new Set(['professional', 'friendly', 'formal'])
 

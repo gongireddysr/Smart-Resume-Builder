@@ -14,6 +14,7 @@ import ResultAnalysisPanel from './app/ResultAnalysisPanel'
 import LandingButton from './landing/LandingButton'
 import EditableTemplate from './EditableTemplate'
 import Template from './Template'
+import { downloadBlob } from '../utils/downloadFile'
 import { generateDocx } from '../utils/docxGenerator'
 import { modificationResultToTemplateData } from '../utils/resumeData'
 import type { ResumeModificationResponse, TemplateData } from '../types/resume'
@@ -49,28 +50,25 @@ function Result({ modificationResult, onBackToEdit, onShowAlert }: ResultProps) 
   const handleDocxDownload = async () => {
     try {
       const docxBlob = await generateDocx(editableData)
-      const url = URL.createObjectURL(docxBlob)
-      const link = document.createElement('a')
-      link.href = url
 
       const candidateName = editableData.full_name || 'Resume'
-      const sanitizedJobTitle = jobTitle
-        .replace(/[^a-zA-Z0-9\s]/g, '')
-        .replace(/\s+/g, '_')
-      const sanitizedName = candidateName
-        .replace(/[^a-zA-Z0-9\s]/g, '')
-        .replace(/\s+/g, '_')
+      const sanitizedJobTitle =
+        jobTitle
+          .replace(/[^a-zA-Z0-9\s]/g, '')
+          .replace(/\s+/g, '_')
+          .trim() || 'Role'
+      const sanitizedName =
+        candidateName
+          .replace(/[^a-zA-Z0-9\s]/g, '')
+          .replace(/\s+/g, '_')
+          .trim() || 'Resume'
 
       posthog.capture('docx_downloaded', {
         job_title: jobTitle,
         candidate_name: candidateName,
       })
 
-      link.download = `${sanitizedName}_${sanitizedJobTitle}.docx`
-      document.body.appendChild(link)
-      link.click()
-      document.body.removeChild(link)
-      URL.revokeObjectURL(url)
+      downloadBlob(docxBlob, `${sanitizedName}_${sanitizedJobTitle}.docx`)
     } catch (error: unknown) {
       console.error('Error generating DOCX:', error)
       onShowAlert('Error generating DOCX file. Please try again.', 'Download failed')
@@ -178,6 +176,10 @@ function Result({ modificationResult, onBackToEdit, onShowAlert }: ResultProps) 
             <div className="flex shrink-0 flex-wrap items-center justify-end gap-2">
               {viewModeToggle}
               {editToggle}
+              <LandingButton onClick={handleDocxDownload}>
+                <DownloadSimple size={18} weight="bold" aria-hidden="true" />
+                Download .docx
+              </LandingButton>
             </div>
 
             <div className="mb-1 flex shrink-0 rounded-lg border border-[var(--brand-border)] bg-[var(--brand-surface)] p-1 lg:hidden">

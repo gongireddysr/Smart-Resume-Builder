@@ -67,9 +67,10 @@ function PreferencesPanel({ preferences, onPreferencesChange }: PreferencesPanel
                 value={preferences.output_length}
                 onChange={(e) => update('output_length', e.target.value as OutputLength)}
               >
-                <option value="concise">Concise</option>
-                <option value="balanced">Balanced</option>
-                <option value="detailed">Detailed</option>
+                <option value="concise">Concise (1 page)</option>
+                <option value="balanced">Balanced (1–2 pages)</option>
+                <option value="detailed">Detailed (2 pages)</option>
+                <option value="comprehensive">Comprehensive (3–4 pages)</option>
               </select>
             </label>
 

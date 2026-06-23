@@ -11,7 +11,8 @@ export const LAYER1_RESUME_PARSE_PROMPT = `You are a resume parsing specialist. 
 - NORMALIZE LIGHTLY: Trim whitespace; keep date formats as written (e.g. "Jan 2021 – Present").
 - SKILLS: List discrete skills/tools mentioned (comma-separated concepts as separate array items).
 - KEYWORDS: Extract notable domain terms, technologies, and methodologies explicitly present in the resume (not inferred).
-- SECTIONS: List which major sections you found (e.g. "Professional Summary", "Experience", "Education").
+- EDUCATION: One string with each degree on its own line (e.g. "Master of Science, Information Systems, Saint Louis University, 2024\\nBachelor of Technology, ICFAI University, 2018"). Do not return education as an array of objects.
+- CERTIFICATIONS: List every certification/license in certifications[] exactly as written on the resume.
 
 ## Output
 Respond with valid JSON only (no markdown fences, no commentary).
@@ -37,8 +38,16 @@ Schema:
       "tools_mentioned": ["tools/tech mentioned in this role only"]
     }
   ],
-  "education": "string or null",
+  "education": "string or null — each degree on its own line if multiple",
   "keywords": ["important terms for search/ATS from resume text only"],
   "sections_found": ["section headers detected"],
   "warnings": ["e.g. missing dates, unclear employer name, no skills section"]
-}`
+}
+
+Example education + certifications extraction:
+"education": "Master of Science, Information Systems, Saint Louis University, 2024\\nBachelor of Technology, ICFAI University, 2018",
+"certifications": [
+  "Tableau Desktop Specialist Certification",
+  "Tableau Certified Data Analyst",
+  "Microsoft Power BI Data Analyst Associate (PL-300)"
+]`

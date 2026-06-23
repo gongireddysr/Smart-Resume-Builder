@@ -1,4 +1,8 @@
 import type { ResumeExperience, ResumeModificationResponse, TemplateData } from '../types/resume'
+import {
+  formatEducationAndCertifications,
+  formatEducationEntry,
+} from './resumeData'
 
 function isStringArray(value: unknown): value is string[] {
   return Array.isArray(value) && value.every((item) => typeof item === 'string')
@@ -65,12 +69,28 @@ function normalizeSkills(value: unknown): string {
 }
 
 function normalizeEducation(value: unknown, certifications: unknown): string {
-  const educationParts = Array.isArray(value)
-    ? toStringArray(value)
-    : [toStringField(value)].filter(Boolean)
-  const certificationParts = toStringArray(certifications)
+  const educationLines: string[] = []
 
-  return [...educationParts, ...certificationParts].filter(Boolean).join('\n')
+  if (Array.isArray(value)) {
+    for (const item of value) {
+      const formatted = formatEducationEntry(item)
+      if (formatted) educationLines.push(formatted)
+    }
+  } else {
+    const formatted = formatEducationEntry(value)
+    if (formatted) {
+      educationLines.push(
+        ...formatted.split(/\r?\n/).map((line) => line.trim()).filter(Boolean)
+      )
+    }
+  }
+
+  const certificationParts = toStringArray(certifications)
+  const certOnly = certificationParts.filter(
+    (cert) => cert.toUpperCase() !== 'CERTIFICATIONS'
+  )
+
+  return formatEducationAndCertifications(educationLines.join('\n'), certOnly)
 }
 
 function normalizeTemplateData(value: unknown): TemplateData {
