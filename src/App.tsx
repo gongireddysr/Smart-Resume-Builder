@@ -120,7 +120,11 @@ function App() {
 
       if (!response.ok) {
         const errorData = await response.json().catch(() => ({}))
-        throw new Error(errorData.error || `Request failed: ${response.status}`)
+        const details =
+          typeof errorData.details === 'string' ? ` (${errorData.details})` : ''
+        throw new Error(
+          `${errorData.error || `Request failed: ${response.status}`}${details}`
+        )
       }
 
       const result: unknown = await response.json()
