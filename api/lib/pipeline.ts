@@ -3,7 +3,7 @@ import { LAYER1_RESUME_PARSE_PROMPT } from "../../prompts/layer1-resume-parse";
 import { LAYER2_JD_PARSE_PROMPT } from "../../prompts/layer2-jd-parse";
 import { LAYER3_MATCH_PROMPT } from "../../prompts/layer3-match";
 import { assembleGenerationPrompt } from "../../src/layer5/assembleGenerationPrompt";
-import { parsedResumeToTemplateData } from "../../src/utils/resumeData";
+import { buildEducationFromParsedResume, parsedResumeToTemplateData } from "../../src/utils/resumeData";
 import type { ParsedJobDescription } from "../../src/types/parsedJobDescription";
 import type { ParsedResume } from "../../src/types/parsedResume";
 import type { ResumeModificationResponse } from "../../src/types/resume";
@@ -99,7 +99,7 @@ async function generateResumeLayer(
 ): Promise<ResumeModificationResponse> {
   const parsed = await chatJson(openai, systemPrompt, userPrompt, {
     temperature: 0.3,
-    max_tokens: 4000,
+    max_tokens: 8000,
   });
   const result = parseResumeModificationResponse(parsed);
 
@@ -116,6 +116,7 @@ async function generateResumeLayer(
     urls:
       result.urls ||
       (parsedResume.urls.length > 0 ? parsedResume.urls.join(', ') : ''),
+    education: buildEducationFromParsedResume(parsedResume) || result.education,
   };
 }
 

@@ -84,10 +84,12 @@ Rewrite the Professional Summary to align with:
 
 Requirements:
 
-* 4–6 lines
+* Length depends on user output_length preference (see Active user preferences)
+* For comprehensive mode: 8–12 sentences, covering years of experience, domain, tools, industries, certifications context, and JD alignment
+* For balanced/detailed: 4–8 sentences
 * ATS optimized
 * Include most important technologies
-* Highlight measurable business impact
+* Highlight measurable business impact from the source resume only
 * Match tone of target role
 
 Example:
@@ -180,12 +182,19 @@ Rewrite bullets to:
 * Use action verbs
 * Include measurable achievements
 
-Bullet Requirements:
+Bullet Requirements (follow user output_length preference):
 
-* 4–8 bullets per role
+* concise: 3–5 bullets per role
+* balanced: 4–6 bullets per role
+* detailed: 6–8 bullets per role
+* comprehensive: 8–12 bullets per role — each bullet 1.5–2 lines
+
+All modes:
+
 * Start with strong action verbs
-* Include technologies naturally
-* Include metrics whenever possible
+* Include technologies naturally (only tools evidenced in source)
+* Include metrics only when present in source material
+* Elaborate by adding scope, stakeholders, and JD-aligned framing to existing achievements — do not fabricate new projects or results
 
 Preferred Format:
 
@@ -197,7 +206,23 @@ Avoid:
 
 ---
 
-## 5. ATS KEYWORD OPTIMIZATION
+## 5. SKILLS SECTION
+
+Rules:
+
+* Include EVERY skill, tool, and technology from the parsed resume — do not omit any to save space
+* Add truthfully matched JD keywords only when the candidate has evidence in experience or skills
+* For comprehensive/detailed modes: group skills into labeled categories separated by " | " (e.g. "Business Intelligence: Tableau Desktop, Tableau Server, Tableau Prep | Databases: SQL, Azure SQL Database, PostgreSQL")
+* For concise mode: single comma-separated list is acceptable
+* Never list a skill the candidate has no evidence for
+
+Example (comprehensive):
+
+"Business Intelligence & Visualization: Tableau Desktop, Tableau Server, Tableau Prep, Power BI | Data Engineering & SQL: SQL, T-SQL, Azure SQL Database, PostgreSQL, ETL, Data Modeling | Programming & Analytics: Python, Pandas, Excel | Cloud & Platforms: Azure, Snowflake"
+
+---
+
+## 6. ATS KEYWORD OPTIMIZATION
 
 Extract keywords from:
 
@@ -232,7 +257,7 @@ These keywords should appear multiple times throughout the resume when relevant.
 
 ---
 
-## 6. TECHNICAL DEPTH MODE
+## 7. TECHNICAL DEPTH MODE
 
 If the JD is highly technical:
 
@@ -259,7 +284,7 @@ After:
 
 ---
 
-## 7. LEADERSHIP MODE
+## 8. LEADERSHIP MODE
 
 If leadership is emphasized:
 
@@ -278,7 +303,7 @@ Example:
 
 ---
 
-## 8. CLOUD & PLATFORM ALIGNMENT
+## 9. CLOUD & PLATFORM ALIGNMENT
 
 Only include cloud technologies already present in the resume.
 
@@ -294,9 +319,38 @@ Resume contains no AWS
 
 ---
 
-## 9. CONCISE MODE
+## 10. ELABORATION WITHOUT INVENTION (CRITICAL)
 
-If enabled:
+When expanding content for comprehensive or detailed modes:
+
+ALLOWED:
+* Split one source bullet into multiple bullets when the source bullet contains multiple distinct achievements
+* Add tool names already mentioned elsewhere in the same role or in the skills section
+* Reframe wording to match JD responsibilities and keywords
+* Add scope language supported by context ("cross-functional stakeholders", "enterprise reporting") when the source implies it
+* Include named projects from the source resume as dedicated bullets with their original dates/context
+
+NOT ALLOWED:
+* Invent employers, job titles, dates, degrees, certifications, or projects
+* Invent metrics (percentages, dollar amounts, user counts) not in the source
+* Add technologies the candidate never used
+* Claim leadership of teams unless the source states it
+* Pad with generic filler unrelated to the candidate's actual background
+
+---
+
+## 11. OUTPUT LENGTH MODES
+
+* concise: ~1 page
+* balanced: 1–2 pages
+* detailed: ~2 pages
+* comprehensive: 3–4 pages — prioritize depth in summary, categorized skills, and elaborated experience bullets while obeying all preservation and anti-invention rules
+
+---
+
+## 12. CONCISE MODE
+
+If output_length is concise:
 
 * 3–5 bullets per role
 * Shorter sentences
@@ -304,58 +358,115 @@ If enabled:
 
 ---
 
-## 10. DETAILED MODE
+## 13. DETAILED / COMPREHENSIVE MODES
 
-If enabled:
+If output_length is detailed or comprehensive:
 
-* 6–8 bullets per role
-* More technical detail
-* More metrics
-* More project scope
+* 6–12 bullets per role (comprehensive uses the higher end)
+* More technical detail drawn from source bullets and tools_mentioned per role
+* More project scope when stated in source
+* Fuller professional summary
+* Complete skills inventory with categorization
 
 ---
 
-# PRESERVE THE FOLLOWING
+# PRESERVE THE FOLLOWING (CRITICAL)
 
-Never modify:
+Never modify, omit, or paraphrase:
 
-* Employer Names
-* Employment Dates
-* Education
-* Certifications
-* Contact Information
+* Employer names
+* Employment dates (start_date and end_date for every role)
+* Education (every degree, school, and graduation year)
+* Certifications (every certification/license from the source resume)
+* Contact information (name, email, phone, location, URLs)
 
-Unless explicitly requested.
+Copy education and certifications verbatim from the parsed resume. If multiple degrees exist, include every one. If a certifications section exists, include every item.
 
 ---
 
 # OUTPUT REQUIREMENTS
 
-Return ONLY valid JSON.
+Return ONLY valid JSON. No markdown fences. No commentary.
 
-No markdown.
-No explanations.
-No commentary.
-
-Output schema:
+## Required JSON schema
 
 {
-"professional_summary": "",
-"skills": [],
-"experience": [
-{
-"company": "",
-"job_title": "",
-"dates": "",
-"responsibilities": [
-""
-]
+  "job_title_from_jd": "Target job title from the JD",
+  "full_name": "Candidate full name",
+  "email": "email or empty string",
+  "phone": "phone or empty string",
+  "location": "location or empty string",
+  "urls": "LinkedIn/portfolio URLs as comma-separated string or empty string",
+  "professional_summary": "Rewritten summary tailored to the JD",
+  "skills": "Comma-separated skills string (not an array)",
+  "experience": [
+    {
+      "company": "Employer name — unchanged from source",
+      "job_title": "Role title (may adjust only if realistic)",
+      "start_date": "Start date exactly as in source",
+      "end_date": "End date exactly as in source",
+      "bullet_points": ["Rewritten achievement bullets"]
+    }
+  ],
+  "education": "Multi-line string. Each degree on its own line. Then a blank line, then the word CERTIFICATIONS, then each certification on its own line. Copy exactly from source — do not use JSON objects for education entries.",
+  "change_summary": ["Brief bullet describing each major change made"],
+  "skills_added": ["Skills truthfully added or emphasized"],
+  "skills_removed": ["Skills removed or de-emphasized"],
+  "skills_boosted": ["Existing skills given more prominence"],
+  "experience_transformed": ["Brief notes on how experience bullets were reframed"],
+  "warnings": ["Any credibility or data concerns"],
+  "suggestions": ["Optional follow-up suggestions for the candidate"]
 }
-],
-"education": [],
-"certifications": [],
-"ats_keywords_added": [],
-"target_role_alignment_score": 0
-}
+
+## Education + certifications format example
+
+Source resume has:
+- Master of Science, Information Systems, Saint Louis University, 2024
+- Bachelor of Technology, ICFAI University, 2018
+- Tableau Desktop Specialist Certification
+- Tableau Certified Data Analyst
+
+Correct output:
+"education": "Master of Science, Information Systems, Saint Louis University, 2024\\nBachelor of Technology, ICFAI University, 2018\\n\\nCERTIFICATIONS\\nTableau Desktop Specialist Certification\\nTableau Certified Data Analyst"
+
+WRONG (never do this):
+"education": [{"degree": "MS", "school": "SLU"}]
+"education": "[object Object]"
+
+## Experience rewrite example
+
+Source bullet:
+"Built Tableau dashboards for sales team."
+
+Target JD emphasizes: Tableau Server, row-level security, KPI reporting
+
+Improved bullet:
+"Designed and published enterprise Tableau dashboards to Tableau Server with row-level security, enabling sales leadership to track KPI trends across regions."
+
+Rules applied: same employer and dates, no invented tools, stronger action verb, JD-aligned keywords.
+
+## Comprehensive experience rewrite example
+
+Source bullets (2):
+- "Built Tableau dashboards for sales team."
+- "Worked with SQL databases."
+
+Target JD: Business Intelligence, Tableau Server administration, KPI reporting, Azure SQL
+
+Elaborated output (2 bullets — expanded, not invented):
+- "Designed and published interactive Tableau dashboards for sales leadership, enabling regional KPI tracking, variance analysis, and executive reporting across multi-region revenue data."
+- "Developed and optimized SQL queries against relational databases to aggregate sales and performance metrics feeding Tableau workbooks and recurring business reports."
+
+Note: No new employers, tools, or metrics were invented — Tableau and SQL were in source; JD keywords were woven in.
+
+## Skills example
+
+Source skills: Tableau, SQL, Python, Excel
+JD requires: Tableau Server, Power BI, ETL, Azure SQL
+
+Correct output:
+"skills": "Tableau, Tableau Server, Tableau Prep, SQL, Azure SQL Database, Python, Power BI, ETL, Excel, Data Modeling"
+
+Only include tools the candidate actually has evidence for in the source resume.
 
 Return ONLY the JSON object.`

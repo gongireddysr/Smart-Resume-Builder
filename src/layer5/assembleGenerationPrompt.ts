@@ -5,17 +5,21 @@ import type {
 } from '../types/assembledPrompt'
 import type { UserPreferences } from '../types/userPreferences'
 import type { ParsedJobDescription } from '../types/parsedJobDescription'
+import type { ParsedResume } from '../types/parsedResume'
 import type { ResumeJdMatch } from '../types/resumeJdMatch'
+import { buildEducationFromParsedResume } from '../utils/resumeData'
 import { normalizeUserPreferences } from '../utils/validateUserPreferences'
 
 function formatPreferenceInstructions(prefs: UserPreferences): string {
   const lengthGuide = {
     concise:
-      'Keep the professional summary to 2–3 sentences. Use at most 3 bullet points per role unless the source had fewer.',
+      'Target ~1 page. Summary: 2–3 sentences. Skills: compact comma-separated list. Use at most 3 bullets per role.',
     balanced:
-      'Use a moderate summary (3–4 sentences) and about 4–5 bullets per role where the source supports it.',
+      'Target 1–2 pages. Summary: 4–5 sentences. Skills: full list, comma-separated. About 4–5 bullets per role.',
     detailed:
-      'Allow a fuller summary and up to 6 bullets per role when the original resume provides enough material.',
+      'Target ~2 pages. Summary: 6–8 sentences. Skills: full categorized list. About 6–8 elaborated bullets per role.',
+    comprehensive:
+      'Target 3–4 pages (~1,200–1,800 words). Summary: 8–12 sentences covering experience depth, domain expertise, core tools, industries served, and JD alignment. Skills: include EVERY skill/tool from the source resume — group into labeled categories (e.g. "Business Intelligence: Tableau Desktop, Tableau Server, Tableau Prep | Data Platforms: SQL, Azure SQL Database, PostgreSQL"). Do not drop any source skill. Experience: 8–12 elaborated bullets per role; each bullet 1.5–2 lines with action verb, scope, tools, stakeholders, and outcome. Expand source bullets by unpacking implied context already supported by the resume — never invent employers, projects, metrics, or tools.',
   }[prefs.output_length]
 
   const focusGuide = {
@@ -86,6 +90,32 @@ function formatMatchSection(match: ResumeJdMatch): string {
     .join('\n')
 }
 
+function formatCredentialsSection(parsedResume: ParsedResume): string {
+  const lines = ['## Education and certifications (COPY VERBATIM — do not omit or reformat as objects)']
+
+  if (parsedResume.education?.trim()) {
+    lines.push('Education:')
+    lines.push(parsedResume.education.trim())
+  } else {
+    lines.push('Education: None listed')
+  }
+
+  if (parsedResume.certifications.length > 0) {
+    lines.push('', 'Certifications:')
+    parsedResume.certifications.forEach((cert) => lines.push(`- ${cert}`))
+  } else {
+    lines.push('', 'Certifications: None listed')
+  }
+
+  lines.push(
+    '',
+    'Required education field in your JSON output:',
+    buildEducationFromParsedResume(parsedResume) || '(empty)'
+  )
+
+  return lines.join('\n')
+}
+
 /**
  * Layer 5 — assemble system + user prompts for Layer 6 (no LLM call).
  */
@@ -112,6 +142,8 @@ ${preferenceBlock}`
     '',
     '## Parsed resume (structured)',
     JSON.stringify(input.parsedResume, null, 2),
+    '',
+    formatCredentialsSection(input.parsedResume),
     '',
     '## Source resume text (ground truth — do not contradict)',
     input.resumeText.trim(),

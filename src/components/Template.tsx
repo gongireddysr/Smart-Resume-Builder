@@ -1,4 +1,10 @@
 import type { TemplateData } from '../types/resume'
+import {
+  parseSkillDisplayLines,
+  parseSkills,
+  splitSkillsIntoColumns,
+  usesCategorizedSkills,
+} from '../utils/resumeData'
 
 interface TemplateProps {
   data: TemplateData
@@ -6,22 +12,9 @@ interface TemplateProps {
 }
 
 function Template({ data, className = '' }: TemplateProps) {
-  // Helper function to parse skills into columns
-  const parseSkills = (skillsString: string) => {
-    if (!skillsString) return []
-    return skillsString.split(',').map(skill => skill.trim()).filter(skill => skill.length > 0)
-  }
-
-  // Helper function to split skills into two columns
-  const splitSkillsIntoColumns = (skills: string[]) => {
-    const midpoint = Math.ceil(skills.length / 2)
-    return {
-      leftColumn: skills.slice(0, midpoint),
-      rightColumn: skills.slice(midpoint)
-    }
-  }
-
   const skills = parseSkills(data.skills || '')
+  const skillDisplayLines = parseSkillDisplayLines(data.skills || '')
+  const showCategorizedSkills = usesCategorizedSkills(data.skills || '')
   const { leftColumn, rightColumn } = splitSkillsIntoColumns(skills)
 
   return (
@@ -77,31 +70,41 @@ function Template({ data, className = '' }: TemplateProps) {
       )}
 
       {/* Skills Section */}
-      {skills.length > 0 && (
+      {skillDisplayLines.length > 0 && (
         <div className="section mb-4 sm:mb-6">
           <h2 className="section-header text-base sm:text-lg font-semibold uppercase text-gray-800 border-b border-gray-300 pb-1 mb-2 sm:mb-3">
             Skills
           </h2>
-          <div className="skills-grid grid grid-cols-1 sm:grid-cols-2 gap-2 sm:gap-4">
-            <div className="skills-column">
-              <ul className="list-disc list-inside space-y-1">
-                {leftColumn.map((skill, index) => (
-                  <li key={index} className="text-sm sm:text-base text-gray-700">
-                    {skill}
-                  </li>
-                ))}
-              </ul>
+          {showCategorizedSkills ? (
+            <ul className="list-disc list-inside space-y-1">
+              {skillDisplayLines.map((line, index) => (
+                <li key={index} className="text-sm sm:text-base text-gray-700">
+                  {line}
+                </li>
+              ))}
+            </ul>
+          ) : (
+            <div className="skills-grid grid grid-cols-1 sm:grid-cols-2 gap-2 sm:gap-4">
+              <div className="skills-column">
+                <ul className="list-disc list-inside space-y-1">
+                  {leftColumn.map((skill, index) => (
+                    <li key={index} className="text-sm sm:text-base text-gray-700">
+                      {skill}
+                    </li>
+                  ))}
+                </ul>
+              </div>
+              <div className="skills-column">
+                <ul className="list-disc list-inside space-y-1">
+                  {rightColumn.map((skill, index) => (
+                    <li key={index} className="text-sm sm:text-base text-gray-700">
+                      {skill}
+                    </li>
+                  ))}
+                </ul>
+              </div>
             </div>
-            <div className="skills-column">
-              <ul className="list-disc list-inside space-y-1">
-                {rightColumn.map((skill, index) => (
-                  <li key={index} className="text-sm sm:text-base text-gray-700">
-                    {skill}
-                  </li>
-                ))}
-              </ul>
-            </div>
-          </div>
+          )}
         </div>
       )}
 
@@ -148,7 +151,7 @@ function Template({ data, className = '' }: TemplateProps) {
           <h2 className="section-header text-base sm:text-lg font-semibold uppercase text-gray-800 border-b border-gray-300 pb-1 mb-2 sm:mb-3">
             Education
           </h2>
-          <p className="text-sm sm:text-base text-gray-700">
+          <p className="whitespace-pre-line text-sm sm:text-base text-gray-700">
             {data.education}
           </p>
         </div>
