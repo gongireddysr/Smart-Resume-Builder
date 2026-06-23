@@ -38,8 +38,16 @@ async function chatJson(
     response_format: { type: "json_object" },
   });
 
-  const raw = response.choices[0].message?.content ?? "";
-  return JSON.parse(raw) as unknown;
+  const raw = response.choices[0].message?.content?.trim() ?? "";
+  if (!raw) {
+    throw new Error("OpenAI returned an empty response. Please try again.");
+  }
+
+  try {
+    return JSON.parse(raw) as unknown;
+  } catch {
+    throw new Error("OpenAI returned invalid JSON. Please try again.");
+  }
 }
 
 async function parseResumeLayer(

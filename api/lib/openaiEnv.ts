@@ -1,23 +1,16 @@
-import { config as loadEnv } from "dotenv";
-import { resolve } from "path";
 import OpenAI from "openai";
 
-let envLoaded = false;
-
-export function loadOpenAiEnv(): void {
-  if (envLoaded || process.env.OPENAI_API_KEY) {
-    envLoaded = true;
-    return;
-  }
-  loadEnv({ path: resolve(process.cwd(), ".env.local") });
-  loadEnv({ path: resolve(process.cwd(), ".env") });
-  envLoaded = true;
+export function getOpenAiApiKey(): string | undefined {
+  const key = process.env.OPENAI_API_KEY?.trim();
+  return key && key.length > 0 ? key : undefined;
 }
 
 export function createOpenAiClient(): OpenAI {
-  loadOpenAiEnv();
-  if (!process.env.OPENAI_API_KEY) {
-    throw new Error("OPENAI_API_KEY is not set in the environment");
+  const apiKey = getOpenAiApiKey();
+  if (!apiKey) {
+    throw new Error(
+      "OPENAI_API_KEY is not set. Add it in Vercel → Settings → Environment Variables, then redeploy."
+    );
   }
-  return new OpenAI({ apiKey: process.env.OPENAI_API_KEY });
+  return new OpenAI({ apiKey });
 }

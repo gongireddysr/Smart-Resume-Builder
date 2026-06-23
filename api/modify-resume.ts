@@ -1,18 +1,36 @@
 import type { VercelRequest, VercelResponse } from "@vercel/node";
-import { createOpenAiClient, loadOpenAiEnv } from "./lib/openaiEnv";
+import { createOpenAiClient, getOpenAiApiKey } from "./lib/openaiEnv";
 import { runResumeModificationPipeline } from "./lib/pipeline";
 import type { ResumeModificationRequest } from "../src/types/resume";
 import { normalizeUserPreferences } from "../src/utils/validateUserPreferences";
 
-loadOpenAiEnv();
+export const config = {
+  maxDuration: 60,
+};
 
 export default async function handler(req: VercelRequest, res: VercelResponse) {
+  if (req.method === "GET") {
+    const hasKey = Boolean(getOpenAiApiKey());
+    return res.status(200).json({
+      ok: hasKey,
+      openai_configured: hasKey,
+      vercel: Boolean(process.env.VERCEL),
+    });
+  }
+
   if (req.method !== "POST") {
     return res.status(405).json({ error: "Method not allowed" });
   }
 
   const body = req.body as ResumeModificationRequest;
   const { resumeText, jobDescription, userPreferences } = body;
+
+  if (!getOpenAiApiKey()) {
+    return res.status(500).json({
+      error:
+        "OPENAI_API_KEY is not configured. Add it in Vercel → Settings → Environment Variables for Production, then redeploy.",
+    });
+  }
 
   if (!resumeText || typeof resumeText !== "string") {
     return res.status(400).json({ error: "resumeText is required" });
@@ -55,11 +73,20 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
     if (
       message.includes("Invalid parsed") ||
       message.includes("Invalid resume") ||
-      message.includes("Invalid resume–JD")
+      message.includes("Invalid resume–JD") ||
+      message.includes("Invalid resume generation")
     ) {
       return res.status(500).json({
         error: "Pipeline produced an invalid response. Please try again.",
-        details: process.env.NODE_ENV === "development" ? message : undefined,
+        details: message,
+      });
+    }
+
+    if (message.includes("401") || message.toLowerCase().includes("incorrect api key")) {
+      return res.status(500).json({
+        error:
+          "OpenAI API key is invalid or expired. Create a new key at platform.openai.com and update OPENAI_API_KEY in Vercel, then redeploy.",
+        details: message,
       });
     }
 
