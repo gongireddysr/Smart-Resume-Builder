@@ -1,10 +1,10 @@
 import { Plus, Trash } from '@phosphor-icons/react'
-import type { ResumeExperience, TemplateData } from '../types/resume'
+import type { ResumeExperience, TemplateData } from '@lib/types/resume'
 import {
   parseSkills,
   skillsToString,
   splitSkillsIntoColumns,
-} from '../utils/resumeData'
+} from '@lib/resumeData'
 
 interface EditableTemplateProps {
   data: TemplateData

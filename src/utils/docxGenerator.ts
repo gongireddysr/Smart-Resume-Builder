@@ -7,8 +7,8 @@ import {
   TabStopType,
   TextRun,
 } from 'docx'
-import type { ResumeExperience, TemplateData } from '../types/resume'
-import { parseSkillDisplayLines, parseSkills, splitSkillsIntoColumns, usesCategorizedSkills } from './resumeData'
+import type { ResumeExperience, TemplateData } from '@lib/types/resume'
+import { parseSkillDisplayLines, parseSkills, splitSkillsIntoColumns, usesCategorizedSkills } from '@lib/resumeData'
 
 const DOCX_MIME =
   'application/vnd.openxmlformats-officedocument.wordprocessingml.document'

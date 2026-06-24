@@ -10,9 +10,9 @@ import InlineAlert from './components/app/InlineAlert'
 import LandingButton from './components/landing/LandingButton'
 import LoadingSkeleton from './utils/LoadingSkeleton'
 import CustomAlert from './utils/CustomAlert'
-import { isResumeModificationResponse } from './utils/validateResumeResponse'
-import type { ResumeModificationResponse } from './types/resume'
-import { DEFAULT_USER_PREFERENCES, type UserPreferences } from './types/userPreferences'
+import { isResumeModificationResponse } from '@lib/validateResumeResponse'
+import type { ResumeModificationResponse } from '@lib/types/resume'
+import { DEFAULT_USER_PREFERENCES, type UserPreferences } from '@lib/types/userPreferences'
 import './styles/product.css'
 
 const Result = lazy(() => import('./components/Result'))

@@ -1,10 +1,10 @@
-import type { TemplateData } from '../types/resume'
+import type { TemplateData } from '@lib/types/resume'
 import {
   parseSkillDisplayLines,
   parseSkills,
   splitSkillsIntoColumns,
   usesCategorizedSkills,
-} from '../utils/resumeData'
+} from '@lib/resumeData'
 
 interface TemplateProps {
   data: TemplateData

@@ -6,7 +6,7 @@ import {
   type ResumeFocus,
   type ResumeTone,
   type UserPreferences,
-} from '../types/userPreferences'
+} from '@lib/types/userPreferences'
 
 interface PreferencesPanelProps {
   preferences: UserPreferences

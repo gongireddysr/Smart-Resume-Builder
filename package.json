@@ -14,7 +14,6 @@
     "@phosphor-icons/react": "^2.1.10",
     "@tailwindcss/vite": "^4.1.16",
     "docx": "^9.5.1",
-    "dotenv": "^17.4.2",
     "mammoth": "^1.11.0",
     "openai": "^6.8.1",
     "pdfjs-dist": "^6.0.227",

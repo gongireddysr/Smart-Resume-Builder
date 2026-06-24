@@ -16,8 +16,8 @@ import EditableTemplate from './EditableTemplate'
 import Template from './Template'
 import { downloadBlob } from '../utils/downloadFile'
 import { generateDocx } from '../utils/docxGenerator'
-import { modificationResultToTemplateData } from '../utils/resumeData'
-import type { ResumeModificationResponse, TemplateData } from '../types/resume'
+import { modificationResultToTemplateData } from '@lib/resumeData'
+import type { ResumeModificationResponse, TemplateData } from '@lib/types/resume'
 import '../styles/product.css'
 
 interface ResultProps {

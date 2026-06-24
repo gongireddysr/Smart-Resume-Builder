@@ -1,5 +1,5 @@
 import type { ReactNode } from "react";
-import type { ResumeModificationResponse } from "../../types/resume";
+import type { ResumeModificationResponse } from '@lib/types/resume'
 import InlineAlert from "./InlineAlert";
 
 interface ResultAnalysisPanelProps {
