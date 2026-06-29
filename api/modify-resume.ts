@@ -1,19 +1,20 @@
 import type { VercelRequest, VercelResponse } from "@vercel/node";
-import { createOpenAiClient, getOpenAiApiKey } from "./lib/openaiEnv";
-import { runResumeModificationPipeline } from "./lib/pipeline";
 import type { ResumeModificationRequest } from "../lib/types/resume";
-import { normalizeUserPreferences } from "../lib/validateUserPreferences";
 
 export const config = {
   maxDuration: 60,
 };
 
+function getOpenAiApiKey(): string | undefined {
+  const key = process.env.OPENAI_API_KEY?.trim();
+  return key && key.length > 0 ? key : undefined;
+}
+
 export default async function handler(req: VercelRequest, res: VercelResponse) {
   if (req.method === "GET") {
-    const hasKey = Boolean(getOpenAiApiKey());
     return res.status(200).json({
-      ok: hasKey,
-      openai_configured: hasKey,
+      ok: Boolean(getOpenAiApiKey()),
+      openai_configured: Boolean(getOpenAiApiKey()),
       vercel: Boolean(process.env.VERCEL),
     });
   }
@@ -22,7 +23,7 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
     return res.status(405).json({ error: "Method not allowed" });
   }
 
-  const body = req.body as ResumeModificationRequest;
+  const body = (req.body ?? {}) as ResumeModificationRequest;
   const { resumeText, jobDescription, userPreferences } = body;
 
   if (!getOpenAiApiKey()) {
@@ -53,6 +54,15 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
   }
 
   try {
+    // Lazy-load the heavy pipeline so any import-time failure surfaces as a
+    // readable JSON error instead of an opaque FUNCTION_INVOCATION_FAILED.
+    const [{ createOpenAiClient }, { runResumeModificationPipeline }, { normalizeUserPreferences }] =
+      await Promise.all([
+        import("./lib/openaiEnv"),
+        import("./lib/pipeline"),
+        import("../lib/validateUserPreferences"),
+      ]);
+
     const openai = createOpenAiClient();
 
     const result = await runResumeModificationPipeline(openai, {
