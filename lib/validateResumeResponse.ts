@@ -1,4 +1,4 @@
-import type { ResumeExperience, ResumeModificationResponse, TemplateData } from './types/resume'
+import type { ResumeExperience, ResumeModificationResponse, TemplateData } from './types/resume.js'
 import {
   formatEducationAndCertifications,
   formatEducationEntry,

@@ -2,7 +2,7 @@ import {
   DEFAULT_USER_PREFERENCES,
   MAX_CUSTOM_INSTRUCTIONS_LENGTH,
   type UserPreferences,
-} from './types/userPreferences'
+} from './types/userPreferences.js'
 
 const OUTPUT_LENGTHS = new Set(['concise', 'balanced', 'detailed', 'comprehensive'])
 const FOCUS_OPTIONS = new Set(['general', 'technical', 'leadership'])

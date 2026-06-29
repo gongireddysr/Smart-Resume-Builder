@@ -2,11 +2,11 @@ import { LAYER5_GENERATION_BASE_PROMPT } from '../prompts/layer5-generation-base
 import type {
   AssembleGenerationPromptInput,
   AssembledGenerationPrompt,
-} from './types/assembledPrompt'
-import type { UserPreferences } from './types/userPreferences'
-import type { ParsedJobDescription } from './types/parsedJobDescription'
-import type { ParsedResume } from './types/parsedResume'
-import type { ResumeJdMatch } from './types/resumeJdMatch'
+} from './types/assembledPrompt.js'
+import type { UserPreferences } from './types/userPreferences.js'
+import type { ParsedJobDescription } from './types/parsedJobDescription.js'
+import type { ParsedResume } from './types/parsedResume.js'
+import type { ResumeJdMatch } from './types/resumeJdMatch.js'
 import { buildEducationFromParsedResume } from './resumeData.js'
 import { normalizeUserPreferences } from './validateUserPreferences.js'
 

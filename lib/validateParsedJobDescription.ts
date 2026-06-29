@@ -1,4 +1,4 @@
-import type { ParsedJobDescription } from './types/parsedJobDescription'
+import type { ParsedJobDescription } from './types/parsedJobDescription.js'
 
 function isStringArray(value: unknown): value is string[] {
   return Array.isArray(value) && value.every((item) => typeof item === 'string')

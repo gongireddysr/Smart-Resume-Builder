@@ -1,5 +1,5 @@
-import type { ParsedResume } from './types/parsedResume'
-import type { ResumeModificationResponse, TemplateData } from './types/resume'
+import type { ParsedResume } from './types/parsedResume.js'
+import type { ResumeModificationResponse, TemplateData } from './types/resume.js'
 
 function toTrimmedString(value: unknown): string {
   if (typeof value === 'string') return value.trim()

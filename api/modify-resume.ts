@@ -1,5 +1,5 @@
 import type { VercelRequest, VercelResponse } from "@vercel/node";
-import type { ResumeModificationRequest } from "../lib/types/resume";
+import type { ResumeModificationRequest } from "../lib/types/resume.js";
 
 export const config = {
   maxDuration: 60,

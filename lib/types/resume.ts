@@ -18,7 +18,7 @@ export interface TemplateData {
   education?: string
 }
 
-import type { UserPreferences } from './userPreferences'
+import type { UserPreferences } from './userPreferences.js'
 
 export interface ResumeModificationRequest {
   resumeText: string
