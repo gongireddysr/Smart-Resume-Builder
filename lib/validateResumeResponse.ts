@@ -2,7 +2,7 @@ import type { ResumeExperience, ResumeModificationResponse, TemplateData } from 
 import {
   formatEducationAndCertifications,
   formatEducationEntry,
-} from './resumeData'
+} from './resumeData.js'
 
 function isStringArray(value: unknown): value is string[] {
   return Array.isArray(value) && value.every((item) => typeof item === 'string')

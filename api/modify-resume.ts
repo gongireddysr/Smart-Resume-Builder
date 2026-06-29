@@ -58,9 +58,9 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
     // readable JSON error instead of an opaque FUNCTION_INVOCATION_FAILED.
     const [{ createOpenAiClient }, { runResumeModificationPipeline }, { normalizeUserPreferences }] =
       await Promise.all([
-        import("./lib/openaiEnv"),
-        import("./lib/pipeline"),
-        import("../lib/validateUserPreferences"),
+        import("./lib/openaiEnv.js"),
+        import("./lib/pipeline.js"),
+        import("../lib/validateUserPreferences.js"),
       ]);
 
     const openai = createOpenAiClient();

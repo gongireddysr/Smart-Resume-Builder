@@ -1,19 +1,19 @@
 import type OpenAI from "openai";
-import { LAYER1_RESUME_PARSE_PROMPT } from "../../prompts/layer1-resume-parse";
-import { LAYER2_JD_PARSE_PROMPT } from "../../prompts/layer2-jd-parse";
-import { LAYER3_MATCH_PROMPT } from "../../prompts/layer3-match";
-import { assembleGenerationPrompt } from "../../lib/assembleGenerationPrompt";
-import { buildEducationFromParsedResume, parsedResumeToTemplateData } from "../../lib/resumeData";
+import { LAYER1_RESUME_PARSE_PROMPT } from "../../prompts/layer1-resume-parse.js";
+import { LAYER2_JD_PARSE_PROMPT } from "../../prompts/layer2-jd-parse.js";
+import { LAYER3_MATCH_PROMPT } from "../../prompts/layer3-match.js";
+import { assembleGenerationPrompt } from "../../lib/assembleGenerationPrompt.js";
+import { buildEducationFromParsedResume, parsedResumeToTemplateData } from "../../lib/resumeData.js";
 import type { ParsedJobDescription } from "../../lib/types/parsedJobDescription";
 import type { ParsedResume } from "../../lib/types/parsedResume";
 import type { ResumeModificationResponse } from "../../lib/types/resume";
 import type { ResumeJdMatch } from "../../lib/types/resumeJdMatch";
 import type { UserPreferences } from "../../lib/types/userPreferences";
-import { isParsedJobDescription } from "../../lib/validateParsedJobDescription";
-import { isParsedResume } from "../../lib/validateParsedResume";
-import { isResumeJdMatch } from "../../lib/validateResumeJdMatch";
-import { parseResumeModificationResponse } from "../../lib/validateResumeResponse";
-import { normalizeUserPreferences } from "../../lib/validateUserPreferences";
+import { isParsedJobDescription } from "../../lib/validateParsedJobDescription.js";
+import { isParsedResume } from "../../lib/validateParsedResume.js";
+import { isResumeJdMatch } from "../../lib/validateResumeJdMatch.js";
+import { parseResumeModificationResponse } from "../../lib/validateResumeResponse.js";
+import { normalizeUserPreferences } from "../../lib/validateUserPreferences.js";
 
 export interface PipelineInput {
   resumeText: string;

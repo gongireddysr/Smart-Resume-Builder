@@ -1,4 +1,4 @@
-import { LAYER5_GENERATION_BASE_PROMPT } from '../prompts/layer5-generation-base'
+import { LAYER5_GENERATION_BASE_PROMPT } from '../prompts/layer5-generation-base.js'
 import type {
   AssembleGenerationPromptInput,
   AssembledGenerationPrompt,
@@ -7,8 +7,8 @@ import type { UserPreferences } from './types/userPreferences'
 import type { ParsedJobDescription } from './types/parsedJobDescription'
 import type { ParsedResume } from './types/parsedResume'
 import type { ResumeJdMatch } from './types/resumeJdMatch'
-import { buildEducationFromParsedResume } from './resumeData'
-import { normalizeUserPreferences } from './validateUserPreferences'
+import { buildEducationFromParsedResume } from './resumeData.js'
+import { normalizeUserPreferences } from './validateUserPreferences.js'
 
 function formatPreferenceInstructions(prefs: UserPreferences): string {
   const lengthGuide = {
